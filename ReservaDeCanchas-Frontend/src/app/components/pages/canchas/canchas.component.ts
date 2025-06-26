@@ -127,6 +127,16 @@ export class CanchasComponent implements OnInit {
     return bloques;
   }
 
+  generarTodosLosHorarios(): string[] {
+    // Ejemplo: genera horarios de 08:00 a 23:00 cada hora
+    const horarios: string[] = [];
+    for (let h = 8; h <= 22; h++) {
+      const hora = h.toString().padStart(2, '0') + ':00';
+      horarios.push(hora);
+    }
+    return horarios;
+  }
+
   getHoy(): string {
     const hoy = new Date();
     return hoy.toISOString().split('T')[0]; // 'YYYY-MM-DD'
