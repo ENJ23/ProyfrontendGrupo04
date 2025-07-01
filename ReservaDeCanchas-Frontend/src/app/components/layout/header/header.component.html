@@ -23,14 +23,27 @@
         <li class="nav-item">
           <a class="nav-link" [routerLink]="['/contacto']" routerLinkActive="active">Contacto</a>
         </li>
-        <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
-          <a class="btn btn-outline-success me-2" href="#login">
-            Iniciar Sesión
-          </a>
-          <a class="btn btn-success" [routerLink]="['/registrar-cliente']">
-            Registrarse
-          </a>
-        </li>
+        <ng-container *ngIf="usuario; else noSesion">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle d-flex flex-column align-items-start" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="fw-bold">{{ usuario.nombre }}</span>
+              <span class="small text-muted">{{ usuario.correo }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenu">
+              <li><a class="dropdown-item" (click)="logout()">Cerrar sesión</a></li>
+            </ul>
+          </li>
+        </ng-container>
+        <ng-template #noSesion>
+          <li class="nav-item ms-lg-3 mt-2 mt-lg-0">
+            <a class="btn btn-outline-success me-2" [routerLink]="['/login']">
+              Iniciar Sesión
+            </a>
+            <a class="btn btn-success" [routerLink]="['/registrar-cliente']">
+              Registrarse
+            </a>
+          </li>
+        </ng-template>
       </ul>
     </div>
   </div>

@@ -5,6 +5,7 @@ import { CanchasService } from '../../../services/canchas.service';
 import { HorariosService } from '../../../services/horarios.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { AuthService } from '../../../services/auth.service'; // <-- Importa AuthService
 
 @Component({
   selector: 'app-canchas',
@@ -35,7 +36,8 @@ export class CanchasComponent implements OnInit {
     private canchasService: CanchasService,
     private horariosService: HorariosService,
     private router: Router, // <-- agrega esto
-    private http: HttpClient
+    private http: HttpClient,
+    private authService: AuthService // <-- agrega esto
   ) {}
 
   ngOnInit(): void {
@@ -127,16 +129,6 @@ export class CanchasComponent implements OnInit {
     return bloques;
   }
 
-  generarTodosLosHorarios(): string[] {
-    // Ejemplo: genera horarios de 08:00 a 23:00 cada hora
-    const horarios: string[] = [];
-    for (let h = 8; h <= 22; h++) {
-      const hora = h.toString().padStart(2, '0') + ':00';
-      horarios.push(hora);
-    }
-    return horarios;
-  }
-
   getHoy(): string {
     const hoy = new Date();
     return hoy.toISOString().split('T')[0]; // 'YYYY-MM-DD'
@@ -166,6 +158,24 @@ export class CanchasComponent implements OnInit {
       alert('Selecciona una fecha y un horario');
       return;
     }
+
+    // 1. Verifica si el usuario está logueado
+    const usuario = this.authService.getUsuario();
+    if (!usuario) {
+      alert('Debes iniciar sesión para reservar.');
+      this.router.navigate(['/login']);
+      // Cierra el modal de Bootstrap si está abierto
+      const modalElement = document.getElementById('horariosModal');
+      if (modalElement) {
+        // @ts-ignore
+        const modal = window.bootstrap.Modal.getInstance(modalElement);
+        if (modal) {
+          modal.hide();
+        }
+  }
+      return;
+    }
+
     const horaInicio = this.horaSeleccionada;
     const cantidadHorasNum = Number(this.cantidadHoras) || 1;
     const horaInicioNum = parseInt(horaInicio.split(':')[0], 10);
@@ -191,14 +201,15 @@ export class CanchasComponent implements OnInit {
       }
     }
 
-    // Redirige pasando horaInicio y horaFin
+    // 2. Redirige pasando también el usuarioId
     this.router.navigate(['/reservas'], {
       queryParams: {
         canchaId: this.selectedCancha._id,
         fecha: this.selectedFecha,
         hora: horaInicio,
         horaFin: horaFin,
-        cantidadHoras: cantidadHorasNum
+        cantidadHoras: cantidadHorasNum,
+        usuarioId: usuario.userid // <-- agrega el id del usuario logueado
       }
     });
   }
