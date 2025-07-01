@@ -176,14 +176,12 @@
                   </tr>
                   <tr class="border-top">
                     <td class="fw-bold">Total Pagado:</td>
-                    <td class="text-end fw-bold">${{ pago?.importeTotal }}</td>
+                    <td class="text-end fw-bold">${{ cancha?.precioPorHora && cantidadHoras ? (cancha.precioPorHora * cantidadHoras * 0.3) : 0 | number:'1.0-0' }}</td>
                   </tr>
                   <tr>
                     <td>Saldo Pendiente:</td>
                     <td class="text-end">
-                      ${{ cancha?.precioPorHora && cantidadHoras && pago?.importeTotal !== undefined
-                        ? (cancha.precioPorHora * cantidadHoras - pago.importeTotal)
-                        : 0 | number:'1.0-0' }}
+                      ${{ pago?.importeTotal !== undefined ? (pago.importeTotal - (cancha.precioPorHora * cantidadHoras * 0.3)) : 0 | number:'1.0-0' }}
                     </td>
                   </tr>
                 </tbody>
