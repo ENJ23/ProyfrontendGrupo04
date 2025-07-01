@@ -8,10 +8,12 @@ import { CompletarPagoComponent } from './components/pages/encargado/completar-p
 import { ReasignarReservaComponent } from './components/pages/encargado/reasignar-reserva/reasignar-reserva.component';
 import { VerAntecedentesComponent } from './components/pages/encargado/ver-antecedentes/ver-antecedentes.component';
 import { AgregarAntecedenteComponent } from './components/pages/encargado/agregar-antecedente/agregar-antecedente.component';
+import { LoginComponent } from './components/layout/login/login.component';
+import { authGuard } from './services/auth.guard';
 
 export const routes: Routes = [
     { path: '', component: InicioComponent },
-    { path: 'reservas', component: ReservasComponent },
+    { path: 'reservas', component: ReservasComponent, canActivate: [authGuard] },
     { path: 'canchas', component: CanchasComponent },
     { path: 'registrar-cliente', component: RegistrarClienteComponent },
     { path: 'bloquear-horarios', component: BloquearHorariosComponent },
@@ -19,4 +21,5 @@ export const routes: Routes = [
     { path: 'reasignar-reserva', component: ReasignarReservaComponent },
     { path: 'ver-antecedentes', component: VerAntecedentesComponent },
     { path: 'agregar-antecedente', component: AgregarAntecedenteComponent },
-];  
+    { path: 'login', component: LoginComponent },
+];
