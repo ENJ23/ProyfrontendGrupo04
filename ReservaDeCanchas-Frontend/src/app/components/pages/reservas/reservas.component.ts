@@ -5,6 +5,7 @@ import { PagosService } from '../../../services/pagos.service';
 import { CommonModule } from '@angular/common';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { ClientesService } from '../../../services/clientes.service';
 
 @Component({
   selector: 'app-reservas',
@@ -31,7 +32,8 @@ export class ReservasComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private canchasService: CanchasService,
-    private pagosService: PagosService
+    private pagosService: PagosService,
+    private clienteService: ClientesService // Asumiendo que tienes un servicio para clientes
   ) {}
 
   ngOnInit() {
@@ -42,11 +44,7 @@ export class ReservasComponent implements OnInit, OnDestroy {
       this.horaFin = params['horaFin']; // Nuevo
       this.cantidadHoras = Number(params['cantidadHoras']) || 1;
 
-      // Simulación de cliente logueado (reemplaza por tu lógica real)
-      this.cliente = {
-        nombre: 'Juan',
-        apellido: 'Pérez'
-      };
+      this.cliente = JSON.parse(localStorage.getItem('usuario') || '{}');
 
       if (canchaId) {
         this.canchasService.getCanchaById(canchaId).subscribe({
