@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+@import url('https://fonts.googleapis.com/css2?family=Funnel+Display:wght@300..800&family=Gantari:ital,wght@0,100..900;1,100..900&display=swap');
 
 .body-container {
     background-color: #f8f9fa;
