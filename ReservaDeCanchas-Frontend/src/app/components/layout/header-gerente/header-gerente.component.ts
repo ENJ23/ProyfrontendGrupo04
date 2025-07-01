@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-header-gerente',
@@ -9,4 +9,21 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrls: ['./header-gerente.component.css']
 })
 export class HeaderGerenteComponent {
+  usuario: any = null;
+
+  constructor(private router: Router) {
+    const usuarioStr = localStorage.getItem('usuario');
+    if (usuarioStr) {
+      try {
+        this.usuario = JSON.parse(usuarioStr);
+      } catch {
+        this.usuario = null;
+      }
+    }
+  }
+
+  logout() {
+    localStorage.removeItem('usuario');
+    this.router.navigate(['/']);
+  }
 }
