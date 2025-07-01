@@ -87,7 +87,7 @@ export class ReservasComponent implements OnInit, OnDestroy {
       importeTotal: importeTotal,
       descripcion: `Reserva de cancha ${this.cancha.nombre} el ${this.fecha} de ${this.hora} a ${this.horaFin}`,
       cancha: this.cancha._id,
-      cliente: this.cliente._id,
+      cliente: this.cliente.userid,
       fecha: this.fecha,
       horaInicio: this.hora,
       horaFin: this.horaFin,
