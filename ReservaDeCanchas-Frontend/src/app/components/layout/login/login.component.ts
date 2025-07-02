@@ -2,13 +2,14 @@ import { Component, NgModule } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, NgModel } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule]
+  imports: [ReactiveFormsModule, RouterModule, CommonModule]
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -32,6 +33,7 @@ export class LoginComponent {
     const { correo, contrasena } = this.loginForm.value;
     this.authService.login(correo, contrasena).subscribe({
       next: (res) => {
+        console.log('Respuesta del login:', res);
         if (res.status === 1) {
           localStorage.setItem('usuario', JSON.stringify({
             nombre: res.nombre,
