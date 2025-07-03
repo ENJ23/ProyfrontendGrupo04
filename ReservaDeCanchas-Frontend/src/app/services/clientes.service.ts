@@ -29,4 +29,8 @@ export class ClientesService {
   deleteCliente(id: string) {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  buscarClientes(nombre: string, apellido: string) {
+    return this.http.get(`${this.apiUrl}/buscar?nombre=${encodeURIComponent(nombre)}&apellido=${encodeURIComponent(apellido)}`);
+  }
 }
