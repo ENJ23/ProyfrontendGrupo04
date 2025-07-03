@@ -11,6 +11,7 @@ import { VerAntecedentesComponent } from './components/pages/encargado/ver-antec
 import { AgregarAntecedenteComponent } from './components/pages/encargado/agregar-antecedente/agregar-antecedente.component';
 import { LoginComponent } from './components/layout/login/login.component';
 import { authGuard } from './services/auth.guard';
+import { FAQComponent } from './components/pages/faq/faq.component';
 
 export const routes: Routes = [
     { path: '', component: InicioComponent },
@@ -24,4 +25,6 @@ export const routes: Routes = [
     { path: 'ver-antecedentes', component: VerAntecedentesComponent },
     { path: 'agregar-antecedente', component: AgregarAntecedenteComponent },
     { path: 'login', component: LoginComponent },
+    { path: 'faq', component: FAQComponent },
+
 ];
