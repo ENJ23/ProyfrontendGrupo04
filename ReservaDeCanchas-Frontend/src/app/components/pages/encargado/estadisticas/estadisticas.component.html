@@ -1,0 +1,23 @@
+<div class="container mt-4">
+  <h2 class="mb-4">Estadísticas de Reservas</h2>
+
+  <!-- Gráfico de Barras -->
+  <div class="mb-5">
+    <h4>Reservas por Fecha</h4>
+    <canvas baseChart
+      [data]="{ labels: chartFechasLabels, datasets: [{ label: 'Reservas', data: chartFechasData }] }"
+      [type]="'bar'"
+      [options]="{ responsive: true, plugins: { legend: { display: true } } }">
+    </canvas>
+  </div>
+
+  <!-- Gráfico de Torta -->
+  <div class="mb-5">
+    <h4>Reservas por Cancha</h4>
+    <canvas baseChart
+      [data]="{ labels: chartCanchasLabels, datasets: [{ data: chartCanchasData }] }"
+      [type]="'doughnut'"
+      [options]="{ responsive: true, plugins: { legend: { position: 'top' } } }">
+    </canvas>
+  </div>
+</div>
