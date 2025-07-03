@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '../../../../services/auth.service';
 
 @Component({
   selector: 'app-header-gerente',
@@ -11,7 +12,7 @@ import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 export class HeaderGerenteComponent {
   usuario: any = null;
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private authService: AuthService) {
     const usuarioStr = localStorage.getItem('usuario');
     if (usuarioStr) {
       try {
@@ -23,7 +24,7 @@ export class HeaderGerenteComponent {
   }
 
   logout() {
-    localStorage.removeItem('usuario');
+    this.authService.logout();
     this.router.navigate(['/']);
   }
 }
