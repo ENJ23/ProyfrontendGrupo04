@@ -1,5 +1,5 @@
 <div class="body-container">
-<div class="container py-4">
+  <div class="container py-4">
     <div class="row justify-content-center">
       <div class="col-lg-10">
         <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
@@ -9,62 +9,62 @@
             </h4>
           </div>
           <div class="card-body p-4">
-            <form class="row g-4">
+            <form class="row g-4" (ngSubmit)="bloquearHorario()">
               <div class="col-md-6">
                 <label for="cancha" class="form-label fw-semibold">Cancha</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light">
                     <i class="fas fa-futbol text-success"></i>
                   </span>
-                  <select id="cancha" class="form-select">
+                  <select id="cancha" class="form-select" [(ngModel)]="canchaSeleccionada" name="canchaSeleccionada" (change)="onSeleccionarCanchaOFecha()" required>
                     <option value="" selected disabled>Seleccione una cancha</option>
-                    <option value="1">Cancha 1 - Fútbol 5</option>
-                    <option value="2">Cancha 2 - Fútbol 7</option>
-                    <option value="3">Cancha 3 - Fútbol 11</option>
+                    <option *ngFor="let cancha of canchas" [ngValue]="cancha">{{ cancha.nombre }} - {{ cancha.tipo }}</option>
                   </select>
                 </div>
               </div>
-  
               <div class="col-md-6">
                 <label for="fecha" class="form-label fw-semibold">Fecha</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light">
                     <i class="far fa-calendar-alt text-success"></i>
                   </span>
-                  <input type="date" class="form-control" id="fecha">
+                  <input type="date" class="form-control" id="fecha" [(ngModel)]="fechaSeleccionada" name="fechaSeleccionada" (change)="onSeleccionarCanchaOFecha()" required>
                 </div>
               </div>
-  
               <div class="col-md-6">
                 <label for="horaInicio" class="form-label fw-semibold">Hora Inicio</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light">
                     <i class="far fa-clock text-success"></i>
                   </span>
-                  <input type="time" class="form-control" id="horaInicio">
+                  <select id="horaInicio" class="form-select" [(ngModel)]="horaInicio" name="horaInicio" required>
+                    <option value="" selected disabled>Seleccione hora inicio</option>
+                    <option *ngFor="let hora of horariosDisponibles" [value]="hora">{{ hora }}</option>
+                  </select>
                 </div>
               </div>
-  
               <div class="col-md-6">
                 <label for="horaFin" class="form-label fw-semibold">Hora Fin</label>
                 <div class="input-group">
                   <span class="input-group-text bg-light">
                     <i class="far fa-clock text-success"></i>
                   </span>
-                  <input type="time" class="form-control" id="horaFin">
+                  <select id="horaFin" class="form-select" [(ngModel)]="horaFin" name="horaFin" required>
+                    <option value="" selected disabled>Seleccione hora fin</option>
+                    <option *ngFor="let hora of horariosDisponibles" [value]="hora">{{ hora }}</option>
+                  </select>
                 </div>
               </div>
-  
               <div class="col-12 d-flex justify-content-end gap-3 mt-3">
-                <button type="button" class="btn btn-outline-secondary px-4">
+                <button type="reset" class="btn btn-outline-secondary px-4" (click)="horaInicio='';horaFin=''">
                   <i class="fas fa-times me-2"></i>Cancelar
                 </button>
-                <button type="submit" class="btn btn-success px-4">
+                <button type="submit" class="btn btn-success px-4" [disabled]="!canchaSeleccionada || !fechaSeleccionada || !horaInicio || !horaFin">
                   <i class="fas fa-lock me-2"></i>Bloquear Horario
                 </button>
               </div>
             </form>
-  
+
             <!-- Tabla de horarios bloqueados -->
             <div class="mt-5">
               <h5 class="mb-4 d-flex align-items-center">
@@ -82,32 +82,29 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td class="border-end">Cancha 1 - Fútbol 5</td>
-                      <td class="border-end">05/06/2025</td>
-                      <td class="border-end">14:00</td>
-                      <td class="border-end">16:00</td>
+                    <tr *ngFor="let horario of horariosBloqueados">
+                      <td class="border-end">{{ canchaSeleccionada?.nombre }} - {{ canchaSeleccionada?.tipo }}</td>
+                      <td class="border-end">{{ horario.fecha }}</td>
+                      <td class="border-end">{{ horario.horaInicio }}</td>
+                      <td class="border-end">{{ horario.horaFin }}</td>
                       <td class="text-center">
-                        <button class="btn btn-sm btn-outline-danger" title="Desbloquear">
+                        <button class="btn btn-sm btn-outline-danger" title="Desbloquear" (click)="desbloquearHorario(horario)">
                           <i class="fas fa-unlock"></i>
                         </button>
                       </td>
                     </tr>
-                    <tr>
-                      <td class="border-end">Cancha 2 - Fútbol 7</td>
-                      <td class="border-end">06/06/2025</td>
-                      <td class="border-end">10:00</td>
-                      <td class="border-end">12:00</td>
-                      <td class="text-center">
-                        <button class="btn btn-sm btn-outline-danger" title="Desbloquear">
-                          <i class="fas fa-unlock"></i>
-                        </button>
-                      </td>
+                    <tr *ngIf="horariosBloqueados.length === 0">
+                      <td colspan="5" class="text-center text-muted">No hay horarios bloqueados para esta cancha y fecha.</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
             </div>
+
+            <div *ngIf="loadingHorarios" class="text-center my-3">
+              <div class="spinner-border text-success"></div>
+            </div>
+            <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
           </div>
         </div>
       </div>
