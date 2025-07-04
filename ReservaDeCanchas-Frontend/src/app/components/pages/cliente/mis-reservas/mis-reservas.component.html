@@ -1,0 +1,87 @@
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Mis Reservas</h2>
+    <button class="btn btn-outline-primary" (click)="recargarReservas()">
+      <i class="fas fa-sync-alt"></i> Recargar
+    </button>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-3">
+      <input type="date" class="form-control" [(ngModel)]="filtroFecha" (change)="filtrarReservas()">
+    </div>
+    <div class="col-md-3">
+      <select class="form-select" [(ngModel)]="estadoFiltro" (change)="filtrarReservas()">
+        <option value="">Todos los estados</option>
+        <option value="pagado">Pagado</option>
+        <option value="pendiente">Pendiente</option>
+        <option value="señado">Señado</option>
+      </select>
+    </div>
+    <div class="col-md-3">
+      <input type="text" class="form-control" placeholder="Buscar por cancha..." [(ngModel)]="filtroCancha" (input)="filtrarReservas()">
+    </div>
+  </div>
+
+  <div *ngIf="cargando" class="text-center my-5">
+    <div class="spinner-border text-success" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+  </div>
+
+  <table *ngIf="!cargando && reservasFiltradas.length > 0" class="table table-bordered table-hover align-middle">
+    <thead class="table-success">
+      <tr>
+        <th>Fecha</th>
+        <th>Cancha</th>
+        <th>Hora Inicio</th>
+        <th>Hora Fin</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let reserva of reservasFiltradas">
+        <td>{{ reserva.fecha | date:'shortDate' }}</td>
+        <td>{{ reserva.cancha?.nombre || '-' }}</td>
+        <td>{{ reserva.horaInicio }}</td>
+        <td>{{ reserva.horaFin }}</td>
+        <td>
+          <span [ngClass]="{
+            'badge bg-success': reserva.pago?.estado === 'pagado',
+            'badge bg-warning text-dark': reserva.pago?.estado === 'pendiente',
+            'badge bg-info text-dark': reserva.pago?.estado === 'señado'
+          }">{{ reserva.pago ? (reserva.pago.estado | titlecase) : '-' }}</span>
+        </td>
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-outline-success btn-sm" (click)="verDetalle(reserva)">
+              <i class="fas fa-eye"></i>
+            </button>
+            <button class="btn btn-outline-danger btn-sm" (click)="cancelarReserva(reserva)" [disabled]="this.pago.estado === 'pagado'">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!cargando && reservasFiltradas.length === 0" class="alert alert-info">
+    No tienes reservas registradas.
+  </div>
+
+  <!-- Modal de detalle (estructura, funcionalidad JS a implementar) -->
+  <div class="modal fade" id="detalleReservaModal" tabindex="-1" aria-labelledby="detalleReservaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="detalleReservaLabel">Detalle de Reserva</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Aquí se mostrarán los detalles de la reserva seleccionada -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
