@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Pago } from '../models/pago.model';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -32,5 +34,9 @@ export class PagosService {
 
   deletePago(id: string) {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  obtenerPagosPorCliente(clienteId: string): Observable<Pago[]> {
+    return this.http.get<Pago[]>(`${this.apiUrl}/cliente/${clienteId}`);
   }
 }

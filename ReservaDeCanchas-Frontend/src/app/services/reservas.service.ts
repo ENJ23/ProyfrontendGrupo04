@@ -1,5 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Reserva } from '../models/reserva.model';
 
 @Injectable({
   providedIn: 'root'
@@ -37,5 +39,9 @@ export class ReservasService {
 
   deleteReserva(id: string) {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  obtenerReservasPorCliente(clienteId: string): Observable<Reserva[]> {
+    return this.http.get<Reserva[]>(`${this.apiUrl}/cliente/${clienteId}`);
   }
 }

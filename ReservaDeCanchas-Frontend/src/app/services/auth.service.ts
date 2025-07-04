@@ -52,4 +52,8 @@ export class AuthService {
     localStorage.removeItem('usuario');
     this.usuarioSubject.next(null);
   }
+
+  cambiarPassword(id: string, actual: string, nueva: string) {
+    return this.http.put(`${this.apiUrl}/${id}/cambiar-password`, { actual, nueva });
+  }
 }

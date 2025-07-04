@@ -1,0 +1,86 @@
+<div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="card shadow-lg p-4 w-100" style="max-width: 500px; border-radius: 1rem;">
+    <h2 class="mb-4 text-center"><i class="fas fa-cog me-2 text-success"></i>Configuración de la Cuenta</h2>
+    <form [formGroup]="passwordForm" (ngSubmit)="cambiarPassword()" class="mb-4 animate__animated animate__fadeIn">
+      <div class="mb-3">
+        <label for="actual" class="form-label">Contraseña Actual</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="fas fa-lock text-success"></i></span>
+          <input id="actual" [type]="mostrarActual ? 'text' : 'password'" class="form-control" formControlName="actual">
+          <button type="button" class="btn btn-outline-secondary" tabindex="-1" (click)="mostrarActual = !mostrarActual">
+            <i class="fas" [ngClass]="mostrarActual ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+        <div *ngIf="passwordForm.get('actual')?.touched && passwordForm.get('actual')?.invalid" class="text-danger small">
+          Debes ingresar tu contraseña actual.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="nueva" class="form-label">Nueva Contraseña</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="fas fa-key text-success"></i></span>
+          <input id="nueva" [type]="mostrarNueva ? 'text' : 'password'" class="form-control" formControlName="nueva">
+          <button type="button" class="btn btn-outline-secondary" tabindex="-1" (click)="mostrarNueva = !mostrarNueva">
+            <i class="fas" [ngClass]="mostrarNueva ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+        <div *ngIf="passwordForm.get('nueva')?.touched && passwordForm.get('nueva')?.errors?.['required']" class="text-danger small">
+          Debes ingresar una nueva contraseña.
+        </div>
+        <div *ngIf="passwordForm.get('nueva')?.touched && passwordForm.get('nueva')?.errors?.['minlength']" class="text-danger small">
+          La nueva contraseña debe tener al menos 6 caracteres.
+        </div>
+      </div>
+      <div class="mb-3">
+        <label for="repetir" class="form-label">Repetir Nueva Contraseña</label>
+        <div class="input-group">
+          <span class="input-group-text bg-light"><i class="fas fa-key text-success"></i></span>
+          <input id="repetir" [type]="mostrarRepetir ? 'text' : 'password'" class="form-control" formControlName="repetir">
+          <button type="button" class="btn btn-outline-secondary" tabindex="-1" (click)="mostrarRepetir = !mostrarRepetir">
+            <i class="fas" [ngClass]="mostrarRepetir ? 'fa-eye-slash' : 'fa-eye'"></i>
+          </button>
+        </div>
+        <div *ngIf="passwordForm.get('repetir')?.touched && passwordForm.get('repetir')?.invalid" class="text-danger small">
+          Debes repetir la nueva contraseña.
+        </div>
+        <div *ngIf="passwordForm.get('repetir')?.touched && passwordForm.value.nueva !== passwordForm.value.repetir" class="text-danger small">
+          Las contraseñas no coinciden.
+        </div>
+      </div>
+      <button type="submit" class="btn btn-success w-100 mt-2 animate__animated animate__fadeIn" [disabled]="passwordForm.invalid">
+        <i class="fas fa-sync-alt me-2"></i>Cambiar Contraseña
+      </button>
+    </form>
+    <div *ngIf="cambiada" class="alert alert-success mb-3 animate__animated animate__fadeIn text-center">
+      <i class="fas fa-check-circle me-2"></i>Contraseña cambiada correctamente.
+    </div>
+    <div class="mb-4 border-top pt-4">
+      <h5><i class="fas fa-bell text-success me-2"></i>Notificaciones</h5>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="notificaciones" [checked]="true" disabled>
+        <label class="form-check-label" for="notificaciones">
+          Recibir notificaciones por correo
+        </label>
+      </div>
+    </div>
+    <div class="mb-4">
+      <h5><i class="fas fa-language text-success me-2"></i>Idioma</h5>
+      <select class="form-select" disabled>
+        <option value="es" selected>Español</option>
+        <option value="en">Inglés</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <h5><i class="fas fa-adjust text-success me-2"></i>Tema</h5>
+      <select class="form-select" disabled>
+        <option value="claro" selected>Claro</option>
+        <option value="oscuro">Oscuro</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <button class="btn btn-outline-danger w-100" (click)="eliminarCuenta()">
+        <i class="fas fa-trash"></i> Eliminar cuenta
+      </button>
+    </div>
+  </div>
+</div>
