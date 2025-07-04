@@ -16,23 +16,25 @@ import { ConfiguracionComponent } from './components/pages/cliente/configuracion
 import { MisReservasComponent } from './components/pages/cliente/mis-reservas/mis-reservas.component';
 import { PerfilComponent } from './components/pages/cliente/perfil/perfil.component';
 import { MisPagosComponent } from './components/pages/cliente/mis-pagos/mis-pagos.component';
+import { encargadoGuard } from './services/encargado.guard';
+import { clienteGuard } from './services/cliente.guard';
 
 export const routes: Routes = [
     { path: '', component: InicioComponent },
-    { path: 'reservas', component: ReservasComponent, canActivate: [authGuard] },
+    { path: 'reservas', component: ReservasComponent, canActivate: [clienteGuard]},
     { path: 'canchas', component: CanchasComponent },
     { path: 'registrar-cliente', component: RegistrarClienteComponent },
-    { path: 'bloquear-horarios', component: BloquearHorariosComponent },
-    { path: 'completar-pago', component: CompletarPagoComponent },
-    { path: 'estadisticas', component: EstadisticasComponent },
-    { path: 'reasignar-reserva', component: ReasignarReservaComponent },
-    { path: 'ver-antecedentes', component: VerAntecedentesComponent },
-    { path: 'agregar-antecedente', component: AgregarAntecedenteComponent },
+    { path: 'bloquear-horarios', component: BloquearHorariosComponent, canActivate: [encargadoGuard]  },
+    { path: 'completar-pago', component: CompletarPagoComponent, canActivate: [encargadoGuard]  },
+    { path: 'estadisticas', component: EstadisticasComponent, canActivate: [encargadoGuard]  },
+    { path: 'reasignar-reserva', component: ReasignarReservaComponent, canActivate: [encargadoGuard]  },
+    { path: 'ver-antecedentes', component: VerAntecedentesComponent, canActivate: [encargadoGuard]  },
+    { path: 'agregar-antecedente', component: AgregarAntecedenteComponent, canActivate: [encargadoGuard]  },
     { path: 'login', component: LoginComponent },
     { path: 'faq', component: FAQComponent },
-    { path: 'mis-pagos', component: MisPagosComponent},
-    { path: 'mis-reservas', component: MisReservasComponent },
-    { path: 'perfil', component: PerfilComponent },
-    { path: 'configuracion', component: ConfiguracionComponent},
+    { path: 'mis-pagos', component: MisPagosComponent, canActivate: [clienteGuard]},
+    { path: 'mis-reservas', component: MisReservasComponent, canActivate: [clienteGuard] },
+    { path: 'perfil', component: PerfilComponent, canActivate: [clienteGuard] },
+    { path: 'configuracion', component: ConfiguracionComponent, canActivate: [clienteGuard]},
 
 ];
