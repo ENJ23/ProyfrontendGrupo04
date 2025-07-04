@@ -5,7 +5,7 @@
         <div class="col-lg-8 mx-auto text-center">
           <h1 class="display-4 texto fw-bold mb-2">Reservá en tan</h1> <h2 class="">solo 7 clicks</h2> 
           <p class="lead mt-4 mb-5 fw-bold shadow-lg">Sin llamadas, sin complicaciones. Todo desde tu pantalla.</p>
-          <a routerLink="/reservas" class="btn reservar-btn text-white btn-lg px-5 py-3 fw-bold text-success">
+          <a [routerLink]="['/registrar-cliente']" class="btn reservar-btn text-white btn-lg px-5 py-3 fw-bold text-success">
             Registrarse ahora
           </a>
         </div>
@@ -157,7 +157,7 @@
       </div>
       
       <div class="text-center mt-5">
-        <a routerLink="/reservas" class="btn btn-success btn-lg px-5">
+        <a [routerLink]="['/canchas']" class="btn btn-success btn-lg px-5">
           <i class="far fa-calendar-check me-2"></i> Reservar Ahora
         </a>
       </div>
