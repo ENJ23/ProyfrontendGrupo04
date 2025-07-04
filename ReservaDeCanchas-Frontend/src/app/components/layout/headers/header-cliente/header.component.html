@@ -18,7 +18,13 @@
           <a class="nav-link" [routerLink]="['/canchas']" routerLinkActive="active">Canchas</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/reservas']" routerLinkActive="active">Reservar</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" [routerLink]="['/contacto']" routerLinkActive="active">Contacto</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [routerLink]="['/faq']" routerLinkActive="active">FAQ</a>
         </li>
         <li class="nav-item dropdown" *ngIf="usuario && usuario.tipo === 'Cliente'">
           <a class="nav-link dropdown-toggle d-flex flex-column align-items-start" href="#" id="userMenu" role="button" data-bs-toggle="dropdown" aria-expanded="false">
