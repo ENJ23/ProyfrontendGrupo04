@@ -1,0 +1,44 @@
+<div class="container py-5 d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+  <div class="card shadow-lg p-4" style="max-width: 450px; width: 100%; border-radius: 1rem;">
+    <div class="text-center mb-4">
+      <div class="position-relative d-inline-block">
+        <img [src]="usuario?.avatarUrl || 'https://ui-avatars.com/api/?name=' + usuario?.nombre + '+' + usuario?.apellido + '&background=4ecca3&color=fff&size=128'" class="rounded-circle border border-3 border-success shadow" width="120" height="120" alt="Avatar">
+        <button class="btn btn-light btn-sm rounded-circle position-absolute bottom-0 end-0 border shadow" style="transform: translate(25%, 25%);" (click)="cambiarFoto()" title="Cambiar foto">
+          <i class="fas fa-camera text-success"></i>
+        </button>
+      </div>
+    </div>
+    <h3 class="text-center mb-3">{{ usuario?.nombre }} {{ usuario?.apellido }}</h3>
+    <form [formGroup]="perfilForm" (ngSubmit)="guardar()" [class.was-validated]="perfilForm.touched" novalidate>
+      <div class="mb-3">
+        <label for="nombre" class="form-label">Nombre</label>
+        <input id="nombre" type="text" class="form-control" formControlName="nombre" required>
+        <div class="invalid-feedback">El nombre es obligatorio.</div>
+      </div>
+      <div class="mb-3">
+        <label for="apellido" class="form-label">Apellido</label>
+        <input id="apellido" type="text" class="form-control" formControlName="apellido" required>
+        <div class="invalid-feedback">El apellido es obligatorio.</div>
+      </div>
+      <div class="mb-3">
+        <label for="correo" class="form-label">Correo</label>
+        <input id="correo" type="email" class="form-control" formControlName="correo" readonly>
+      </div>
+      <div class="mb-3">
+        <label for="telefono" class="form-label">Teléfono</label>
+        <input id="telefono" type="text" class="form-control" formControlName="telefono">
+      </div>
+      <div class="d-flex justify-content-between align-items-center mt-4">
+        <button *ngIf="editar" type="submit" class="btn btn-success px-4" [disabled]="perfilForm.invalid">
+          <i class="fas fa-save me-2"></i>Guardar
+        </button>
+        <button type="button" class="btn btn-outline-secondary px-4" (click)="editar = !editar">
+          <i class="fas" [ngClass]="editar ? 'fa-times' : 'fa-edit'"></i> {{ editar ? 'Cancelar' : 'Editar' }}
+        </button>
+      </div>
+    </form>
+    <div *ngIf="guardado" class="alert alert-success mt-4 text-center animate__animated animate__fadeIn">
+      <i class="fas fa-check-circle me-2"></i>Perfil actualizado correctamente.
+    </div>
+  </div>
+</div>
