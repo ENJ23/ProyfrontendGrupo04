@@ -12,6 +12,10 @@ import { AgregarAntecedenteComponent } from './components/pages/encargado/agrega
 import { LoginComponent } from './components/layout/login/login.component';
 import { authGuard } from './services/auth.guard';
 import { FAQComponent } from './components/pages/faq/faq.component';
+import { ConfiguracionComponent } from './components/pages/cliente/configuracion/configuracion.component';
+import { MisReservasComponent } from './components/pages/cliente/mis-reservas/mis-reservas.component';
+import { PerfilComponent } from './components/pages/cliente/perfil/perfil.component';
+import { MisPagosComponent } from './components/pages/cliente/mis-pagos/mis-pagos.component';
 
 export const routes: Routes = [
     { path: '', component: InicioComponent },
@@ -26,5 +30,9 @@ export const routes: Routes = [
     { path: 'agregar-antecedente', component: AgregarAntecedenteComponent },
     { path: 'login', component: LoginComponent },
     { path: 'faq', component: FAQComponent },
+    { path: 'mis-pagos', component: MisPagosComponent},
+    { path: 'mis-reservas', component: MisReservasComponent },
+    { path: 'perfil', component: PerfilComponent },
+    { path: 'configuracion', component: ConfiguracionComponent},
 
 ];
