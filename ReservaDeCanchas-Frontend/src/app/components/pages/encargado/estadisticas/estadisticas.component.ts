@@ -3,6 +3,7 @@ import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angula
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Chart, ChartConfiguration, ChartType, registerables } from 'chart.js';
+import { environment } from '../../../../../environment/environment';
 
 @Component({
   selector: 'app-estadisticas',
@@ -36,7 +37,7 @@ export class EstadisticasComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.http.get<any>('http://localhost:3000/reservas').subscribe(response => {
+    this.http.get<any>(`${environment.apiUrl}/reservas`).subscribe(response => {
       this.reservas = response.data;
 
       this.generarGraficoPorFechas();

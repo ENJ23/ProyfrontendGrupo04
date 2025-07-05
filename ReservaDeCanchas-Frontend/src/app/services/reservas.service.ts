@@ -2,13 +2,16 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Reserva } from '../models/reserva.model';
+import { environment } from '../../environment/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservasService {
 
-  private apiUrl = 'http://localhost:3000/reservas'; // Replace with your actual API URL
+
+
+  private apiUrl = `${environment.apiUrl}/reservas`; // Replace with your actual API URL
 
   constructor(private http: HttpClient) { }
 
