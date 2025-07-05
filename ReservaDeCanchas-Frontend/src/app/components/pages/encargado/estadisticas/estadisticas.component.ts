@@ -3,7 +3,7 @@ import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angula
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Chart, ChartConfiguration, ChartType, registerables } from 'chart.js';
-import { environment } from '../../../../../environment/environment';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-estadisticas',
