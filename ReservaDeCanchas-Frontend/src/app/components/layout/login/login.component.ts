@@ -13,7 +13,7 @@ declare const google: any;
   imports: [ReactiveFormsModule, RouterModule, CommonModule]
 })
 export class LoginComponent implements AfterViewInit {
-  googleClientId = '694732029000-2spfvr38jrm751h35ptm39atgs82bhhq.apps.googleusercontent.com';
+  googleClientId = '989381766185-qqun9sbv6qk03guuar3n1inlps1cegbn.apps.googleusercontent.com';
   ngAfterViewInit(): void {
     // Cargar el script de Google si no está cargado
     if (!document.getElementById('google-signin-script')) {
