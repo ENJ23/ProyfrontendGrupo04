@@ -18,6 +18,7 @@ import { PerfilComponent } from './components/pages/cliente/perfil/perfil.compon
 import { MisPagosComponent } from './components/pages/cliente/mis-pagos/mis-pagos.component';
 import { encargadoGuard } from './services/encargado.guard';
 import { clienteGuard } from './services/cliente.guard';
+import { AbmCanchasComponent } from './components/pages/encargado/abm-canchas';
 
 export const routes: Routes = [
     { path: '', component: InicioComponent },
@@ -36,5 +37,8 @@ export const routes: Routes = [
     { path: 'mis-reservas', component: MisReservasComponent, canActivate: [clienteGuard] },
     { path: 'perfil', component: PerfilComponent, canActivate: [clienteGuard] },
     { path: 'configuracion', component: ConfiguracionComponent, canActivate: [clienteGuard]},
+
+    // ABM de canchas solo para encargados
+    { path: 'abm-canchas', component: AbmCanchasComponent, canActivate: [encargadoGuard] },
 
 ];

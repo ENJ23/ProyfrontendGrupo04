@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // <-- Importa esto
+import { FormsModule } from '@angular/forms';
 import { CanchasService } from '../../../services/canchas.service';
 import { HorariosService } from '../../../services/horarios.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { AuthService } from '../../../services/auth.service'; // <-- Importa AuthService
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-canchas',
@@ -15,11 +15,14 @@ import { AuthService } from '../../../services/auth.service'; // <-- Importa Aut
   styleUrl: './canchas.component.css'
 })
 export class CanchasComponent implements OnInit {
+  // ...
   canchas: any[] = [];
   loading: boolean = false;
   error: string | null = null;
+  tipoUsuario: string = '';
 
   selectedCancha: any = null;
+  // Eliminado ABM: showAddModal, showEditModal, showDeleteModal, canchaAEliminar, nuevaCancha, nuevaImagen, editImagen, canchaEdit
   horariosDisponibles: string[] = [];
   selectedFecha: string = ''; // formato 'YYYY-MM-DD'
   loadingHorarios = false;
@@ -35,15 +38,19 @@ export class CanchasComponent implements OnInit {
   constructor(
     private canchasService: CanchasService,
     private horariosService: HorariosService,
-    private router: Router, // <-- agrega esto
+    private router: Router,
     private http: HttpClient,
-    private authService: AuthService // <-- agrega esto
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.obtenerCanchas();
     this.setFechasLimite();
+    const usuario = this.authService.getUsuario();
+    this.tipoUsuario = usuario?.tipo || '';
   }
+
+  // Eliminado ABM: abrirModalAgregar, agregarCancha, abrirModalEditar, editarCanchaSubmit, abrirModalEliminar, eliminarCanchaConfirmada, cerrarModal
 
   setFechasLimite() {
     const hoy = new Date();
