@@ -94,6 +94,7 @@ export class LoginComponent implements AfterViewInit {
             nombre: res.nombre,
             apellido: res.apellido,
             correo: res.correo,
+            telefono: res.telefono,
             tipo: res.tipo,
             userid: res.userid
           }));
@@ -101,6 +102,7 @@ export class LoginComponent implements AfterViewInit {
             nombre: res.nombre,
             apellido: res.apellido,
             correo: res.correo,
+            telefono: res.telefono,
             tipo: res.tipo,
             userid: res.userid
           });

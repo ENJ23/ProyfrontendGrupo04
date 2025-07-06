@@ -3,5 +3,6 @@ export interface Usuario {
   apellido: string;
   correo: string;
   tipo: string;
+  telefono?: string;
   userid?: string;
 } 
