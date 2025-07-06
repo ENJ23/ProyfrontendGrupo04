@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 
@@ -19,15 +19,21 @@ export class CanchasService {
     return this.http.get(`${this.apiUrl}/${id}`);
   }
 
-  createCancha(data: any) {
-    return this.http.post(this.apiUrl, data);
+  createCancha(data: any, token?: string) {
+    let headers = new HttpHeaders();
+    if (token) headers = headers.set('Authorization', `Bearer ${token}`);
+    return this.http.post(this.apiUrl, data, { headers });
   }
 
-  updateCancha(id: string, data: any) {
-    return this.http.put(`${this.apiUrl}/${id}`, data);
+  updateCancha(id: string, data: any, token?: string) {
+    let headers = new HttpHeaders();
+    if (token) headers = headers.set('Authorization', `Bearer ${token}`);
+    return this.http.put(`${this.apiUrl}/${id}`, data, { headers });
   }
 
-  deleteCancha(id: string) {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  deleteCancha(id: string, token?: string) {
+    let headers = new HttpHeaders();
+    if (token) headers = headers.set('Authorization', `Bearer ${token}`);
+    return this.http.delete(`${this.apiUrl}/${id}`, { headers });
   }
 }

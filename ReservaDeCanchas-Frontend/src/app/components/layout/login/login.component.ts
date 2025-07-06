@@ -82,20 +82,16 @@ export class LoginComponent implements AfterViewInit {
     this.authService.loginConGoogle(credential).subscribe({
       next: (res) => {
         if (res.status === 1) {
-          localStorage.setItem('usuario', JSON.stringify({
+          const usuario = {
             nombre: res.nombre,
             apellido: res.apellido,
             correo: res.correo,
             tipo: res.tipo,
-            userid: res.userid
-          }));
-          this.authService.setUsuario({
-            nombre: res.nombre,
-            apellido: res.apellido,
-            correo: res.correo,
-            tipo: res.tipo,
-            userid: res.userid
-          });
+            userid: res.userid,
+            token: res.token
+          };
+          localStorage.setItem('usuario', JSON.stringify(usuario));
+          this.authService.setUsuario(usuario);
           this.router.navigate(['/']);
         } else {
           alert('No se pudo iniciar sesión con Google');
@@ -130,6 +126,7 @@ export class LoginComponent implements AfterViewInit {
       next: (res) => {
         console.log('Respuesta del login:', res);
         if (res.status === 1) {
+          const usuario = {
           localStorage.setItem('usuario', JSON.stringify({
             nombre: res.nombre,
             apellido: res.apellido,
@@ -139,13 +136,17 @@ export class LoginComponent implements AfterViewInit {
             userid: res.userid
           }));
           this.authService.setUsuario({
+
             nombre: res.nombre,
             apellido: res.apellido,
             correo: res.correo,
             telefono: res.telefono,
             tipo: res.tipo,
-            userid: res.userid
-          });
+            userid: res.userid,
+            token: res.token
+          };
+          localStorage.setItem('usuario', JSON.stringify(usuario));
+          this.authService.setUsuario(usuario);
           this.router.navigate(['/']);
         } else {
           alert('Credenciales incorrectas');

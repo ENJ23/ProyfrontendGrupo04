@@ -35,7 +35,6 @@
             <div class="d-flex justify-content-between align-items-center mb-3">
               <span class="badge bg-light text-dark">
                 <i class="fas fa-users me-1"></i>
-                <!-- Puedes ajustar esto si tienes info de jugadores -->
                 {{ cancha.tipo === 'Fútbol 5' ? '5 jugadores' : cancha.tipo === 'Fútbol 7' ? '7 jugadores' : cancha.tipo === 'Fútbol 11' ? '11 jugadores' : '' }}
               </span>
               <span class="badge bg-light text-dark">
@@ -43,13 +42,14 @@
               </span>
             </div>
             <div class="mt-auto">
-              <button class="btn btn-success w-100"
+              <button class="btn btn-success w-100 btn-ver-horarios"
                       [disabled]="cancha.estado !== 'disponible'"
                       (click)="abrirModalHorarios(cancha)">
                 <i class="far fa-calendar-alt me-2"></i>
                 {{ cancha.estado === 'disponible' ? 'Ver Horarios' : 'No disponible' }}
               </button>
             </div>
+
           </div>
         </div>
       </div>
