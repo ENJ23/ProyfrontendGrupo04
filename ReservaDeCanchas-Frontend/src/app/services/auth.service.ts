@@ -18,8 +18,8 @@ export class AuthService {
   }
 
   // Login tradicional
-  login(correo: string, contraseña: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, { correo, contraseña });
+  login(correo: string, contraseña: string, captchaToken?: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, { correo, contraseña, captchaToken });
   }
 
   // Login con Google

@@ -40,7 +40,11 @@
                 <a routerLink="/" class="btn btn-outline-secondary">
                   <i class="fas fa-arrow-left me-2"></i>Volver al Inicio
                 </a>
-                <button type="submit" class="btn btn-success px-4" [disabled]="loginForm.invalid">
+                <re-captcha
+                  (resolved)="onCaptchaResolved($event)"
+                  [siteKey]="siteKey">
+                </re-captcha>
+                <button type="submit" class="btn btn-success px-4" [disabled]="loginForm.invalid || !captchaResuelta">
                   <i class="fas fa-sign-in-alt me-2"></i>Ingresar
                 </button>
               </div>

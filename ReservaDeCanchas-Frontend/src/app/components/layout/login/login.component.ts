@@ -3,6 +3,7 @@ import { AuthService } from '../../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, NgModel } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 declare const google: any;
 @Component({
@@ -10,10 +11,14 @@ declare const google: any;
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule, CommonModule]
+  imports: [ReactiveFormsModule, RouterModule, CommonModule, RecaptchaModule]
 })
 export class LoginComponent implements AfterViewInit {
   googleClientId = '989381766185-qqun9sbv6qk03guuar3n1inlps1cegbn.apps.googleusercontent.com';
+  captchaResuelta = false;
+  captchaToken: string = '';
+  siteKey: string = '6LehQHorAAAAAFk3eaHitiEeI80JFjnf-s2OsCN9';
+
   ngAfterViewInit(): void {
     // Cargar el script de Google si no está cargado
     if (!document.getElementById('google-signin-script')) {
@@ -80,13 +85,21 @@ export class LoginComponent implements AfterViewInit {
     });
   }
 
+  onCaptchaResolved(token: string | null) {
+    this.captchaResuelta = !!token;
+    this.captchaToken = token || '';
+  }
+
   login() {
-    if (this.loginForm.invalid) {
+    if (this.loginForm.invalid || !this.captchaResuelta) {
       this.loginForm.markAllAsTouched();
+      if (!this.captchaResuelta) {
+        alert('Por favor, resuelve el captcha');
+      }
       return;
     }
     const { correo, contrasena } = this.loginForm.value;
-    this.authService.login(correo, contrasena).subscribe({
+    this.authService.login(correo, contrasena, this.captchaToken).subscribe({
       next: (res) => {
         console.log('Respuesta del login:', res);
         if (res.status === 1) {

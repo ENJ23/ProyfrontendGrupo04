@@ -125,11 +125,16 @@
               </div>
             </div>
 
+            <re-captcha
+              (resolved)="onCaptchaResolved($event)"
+              [siteKey]="siteKey">
+            </re-captcha>
+
             <div class="d-grid gap-2 d-md-flex justify-content-between align-items-center">
               <a routerLink="/" class="btn btn-outline-secondary">
                 <i class="fas fa-arrow-left me-2"></i>Volver al Inicio
               </a>
-              <button type="submit" class="btn btn-success px-4" [disabled]="registroForm.invalid || exito">
+              <button type="submit" class="btn btn-success px-4" [disabled]="registroForm.invalid || exito || !captchaResuelta">
                 <i class="fas fa-user-plus me-2"></i>Registrarse
               </button>
             </div>

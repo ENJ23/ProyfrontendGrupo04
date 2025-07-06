@@ -3,11 +3,12 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { ClientesService } from '../../../services/clientes.service';
 import { CommonModule } from '@angular/common';
+import { RecaptchaModule } from 'ng-recaptcha';
 
 @Component({
   selector: 'app-registrar-cliente',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule, RecaptchaModule],
   templateUrl: './registrar-cliente.component.html',
   styleUrl: './registrar-cliente.component.css'
 })
@@ -18,6 +19,9 @@ export class RegistrarClienteComponent {
   exito = false;
   mostrarPassword = false;
   mostrarConfirmPassword = false;
+  captchaResuelta = false;
+  captchaToken: string = '';
+  siteKey: string = '6LehQHorAAAAAFk3eaHitiEeI80JFjnf-s2OsCN9';
 
   constructor(
     private fb: FormBuilder,
@@ -41,12 +45,21 @@ export class RegistrarClienteComponent {
       ? null : { mismatch: true };
   }
 
+  onCaptchaResolved(token: string | null) {
+    this.captchaResuelta = !!token;
+    this.captchaToken = token || '';
+  }
+
   registrar() {
     this.enviado = true;
     this.errorMsg = '';
     this.exito = false;
-    if (this.registroForm.invalid) return;
-
+    if (this.registroForm.invalid || !this.captchaResuelta) {
+      if (!this.captchaResuelta) {
+        this.errorMsg = 'Por favor, resuelve el captcha';
+      }
+      return;
+    }
     const { nombre, apellido, telefono, correo, contraseña, newsletter } = this.registroForm.value;
     const nuevoCliente = {
       nombre,
@@ -54,9 +67,9 @@ export class RegistrarClienteComponent {
       telefono,
       correo,
       contraseña,
-      newsletter
+      newsletter,
+      captchaToken: this.captchaToken
     };
-
     this.clientesService.createCliente(nuevoCliente).subscribe({
       next: () => {
         this.exito = true;
