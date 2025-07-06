@@ -5,6 +5,8 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, NgModel } from
 import { CommonModule } from '@angular/common';
 
 declare const google: any;
+declare const grecaptcha: any;
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -14,6 +16,22 @@ declare const google: any;
 })
 export class LoginComponent implements AfterViewInit {
   googleClientId = '989381766185-qqun9sbv6qk03guuar3n1inlps1cegbn.apps.googleusercontent.com';
+  captchaResuelta = false;
+  captchaToken: string = '';
+  siteKey: string = '6LehQHorAAAAAFk3eaHitiEeI80JFjnf-s2OsCN9';
+  loginForm: FormGroup;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.loginForm = this.fb.group({
+      correo: ['', [Validators.required, Validators.email]],
+      contrasena: ['', Validators.required]
+    });
+  }
+
   ngAfterViewInit(): void {
     // Cargar el script de Google si no está cargado
     if (!document.getElementById('google-signin-script')) {
@@ -25,6 +43,37 @@ export class LoginComponent implements AfterViewInit {
     } else {
       this.renderGoogleButton();
     }
+
+    // Cargar reCAPTCHA
+    this.cargarRecaptcha();
+  }
+
+  cargarRecaptcha() {
+    if (!document.getElementById('recaptcha-script')) {
+      const script = document.createElement('script');
+      script.src = 'https://www.google.com/recaptcha/api.js';
+      script.id = 'recaptcha-script';
+      script.onload = () => this.renderRecaptcha();
+      document.body.appendChild(script);
+    } else {
+      this.renderRecaptcha();
+    }
+  }
+
+  renderRecaptcha() {
+    if (typeof grecaptcha !== 'undefined') {
+      grecaptcha.ready(() => {
+        grecaptcha.render('recaptcha-container', {
+          sitekey: this.siteKey,
+          callback: (token: string) => this.onCaptchaResolved(token)
+        });
+      });
+    }
+  }
+
+  onCaptchaResolved(token: string) {
+    this.captchaResuelta = !!token;
+    this.captchaToken = token || '';
   }
 
   renderGoogleButton() {
@@ -67,45 +116,30 @@ export class LoginComponent implements AfterViewInit {
       error: () => alert('Error en el login con Google')
     });
   }
-  loginForm: FormGroup;
-
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private fb: FormBuilder
-  ) {
-    this.loginForm = this.fb.group({
-      correo: ['', [Validators.required, Validators.email]],
-      contrasena: ['', Validators.required]
-    });
-  }
 
   login() {
-    if (this.loginForm.invalid) {
+    if (this.loginForm.invalid || !this.captchaResuelta) {
       this.loginForm.markAllAsTouched();
+      if (!this.captchaResuelta) {
+        alert('Por favor, resuelve el captcha');
+      }
       return;
     }
     const { correo, contrasena } = this.loginForm.value;
-    this.authService.login(correo, contrasena).subscribe({
+    this.authService.login(correo, contrasena, this.captchaToken).subscribe({
       next: (res) => {
         console.log('Respuesta del login:', res);
         if (res.status === 1) {
-          localStorage.setItem('usuario', JSON.stringify({
+          const usuario = {
             nombre: res.nombre,
             apellido: res.apellido,
             correo: res.correo,
             telefono: res.telefono,
             tipo: res.tipo,
             userid: res.userid
-          }));
-          this.authService.setUsuario({
-            nombre: res.nombre,
-            apellido: res.apellido,
-            correo: res.correo,
-            telefono: res.telefono,
-            tipo: res.tipo,
-            userid: res.userid
-          });
+          };
+          localStorage.setItem('usuario', JSON.stringify(usuario));
+          this.authService.setUsuario(usuario);
           this.router.navigate(['/']);
         } else {
           alert('Credenciales incorrectas');
