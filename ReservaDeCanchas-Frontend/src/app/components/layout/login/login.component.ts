@@ -20,6 +20,19 @@ export class LoginComponent implements AfterViewInit {
   captchaToken: string = '';
   siteKey: string = '6LehQHorAAAAAFk3eaHitiEeI80JFjnf-s2OsCN9';
 
+  loginForm: FormGroup;
+
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private fb: FormBuilder
+  ) {
+    this.loginForm = this.fb.group({
+      correo: ['', [Validators.required, Validators.email]],
+      contrasena: ['', Validators.required]
+    });
+  }
+  
   ngAfterViewInit(): void {
     // Cargar el script de Google si no está cargado
     if (!document.getElementById('google-signin-script')) {
@@ -100,18 +113,6 @@ export class LoginComponent implements AfterViewInit {
       error: () => alert('Error en el login con Google')
     });
   }
-  loginForm: FormGroup;
-
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private fb: FormBuilder
-  ) {
-    this.loginForm = this.fb.group({
-      correo: ['', [Validators.required, Validators.email]],
-      contrasena: ['', Validators.required]
-    });
-  }
 
   login() {
     if (this.loginForm.invalid || !this.captchaResuelta) {
@@ -127,23 +128,12 @@ export class LoginComponent implements AfterViewInit {
         console.log('Respuesta del login:', res);
         if (res.status === 1) {
           const usuario = {
-          localStorage.setItem('usuario', JSON.stringify({
             nombre: res.nombre,
             apellido: res.apellido,
             correo: res.correo,
             telefono: res.telefono,
             tipo: res.tipo,
             userid: res.userid
-          }));
-          this.authService.setUsuario({
-
-            nombre: res.nombre,
-            apellido: res.apellido,
-            correo: res.correo,
-            telefono: res.telefono,
-            tipo: res.tipo,
-            userid: res.userid,
-            token: res.token
           };
           localStorage.setItem('usuario', JSON.stringify(usuario));
           this.authService.setUsuario(usuario);
