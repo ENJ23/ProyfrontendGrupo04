@@ -1,12 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HorariosService {
 
-  private apiUrl = 'http://localhost:3000/horarios'; // Replace with your actual API URL
+  private apiUrl = `${environment.apiUrl}/horarios`; // Replace with your actual API URL
 
   constructor(private http: HttpClient) { }
 
