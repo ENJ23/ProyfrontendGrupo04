@@ -3,15 +3,16 @@ import { AuthService } from '../../../services/auth.service';
 import { Router, RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, NgModel } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RecaptchaModule } from 'ng-recaptcha';
 
 declare const google: any;
+declare const grecaptcha: any;
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterModule, CommonModule, RecaptchaModule]
+  imports: [ReactiveFormsModule, RouterModule, CommonModule]
 })
 export class LoginComponent implements AfterViewInit {
   googleClientId = '989381766185-qqun9sbv6qk03guuar3n1inlps1cegbn.apps.googleusercontent.com';
@@ -30,6 +31,37 @@ export class LoginComponent implements AfterViewInit {
     } else {
       this.renderGoogleButton();
     }
+
+    // Cargar reCAPTCHA
+    this.cargarRecaptcha();
+  }
+
+  cargarRecaptcha() {
+    if (!document.getElementById('recaptcha-script')) {
+      const script = document.createElement('script');
+      script.src = 'https://www.google.com/recaptcha/api.js';
+      script.id = 'recaptcha-script';
+      script.onload = () => this.renderRecaptcha();
+      document.body.appendChild(script);
+    } else {
+      this.renderRecaptcha();
+    }
+  }
+
+  renderRecaptcha() {
+    if (typeof grecaptcha !== 'undefined') {
+      grecaptcha.ready(() => {
+        grecaptcha.render('recaptcha-container', {
+          sitekey: this.siteKey,
+          callback: (token: string) => this.onCaptchaResolved(token)
+        });
+      });
+    }
+  }
+
+  onCaptchaResolved(token: string) {
+    this.captchaResuelta = !!token;
+    this.captchaToken = token || '';
   }
 
   renderGoogleButton() {
@@ -83,11 +115,6 @@ export class LoginComponent implements AfterViewInit {
       correo: ['', [Validators.required, Validators.email]],
       contrasena: ['', Validators.required]
     });
-  }
-
-  onCaptchaResolved(token: string | null) {
-    this.captchaResuelta = !!token;
-    this.captchaToken = token || '';
   }
 
   login() {

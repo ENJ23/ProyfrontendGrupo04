@@ -1,18 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { ClientesService } from '../../../services/clientes.service';
 import { CommonModule } from '@angular/common';
-import { RecaptchaModule } from 'ng-recaptcha';
+
+declare const grecaptcha: any;
 
 @Component({
   selector: 'app-registrar-cliente',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterModule, RecaptchaModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterModule],
   templateUrl: './registrar-cliente.component.html',
   styleUrl: './registrar-cliente.component.css'
 })
-export class RegistrarClienteComponent {
+export class RegistrarClienteComponent implements AfterViewInit {
   registroForm: FormGroup;
   enviado = false;
   errorMsg = '';
@@ -40,14 +41,41 @@ export class RegistrarClienteComponent {
     }, { validators: this.passwordsMatchValidator });
   }
 
+  ngAfterViewInit(): void {
+    this.cargarRecaptcha();
+  }
+
+  cargarRecaptcha() {
+    if (!document.getElementById('recaptcha-script')) {
+      const script = document.createElement('script');
+      script.src = 'https://www.google.com/recaptcha/api.js';
+      script.id = 'recaptcha-script';
+      script.onload = () => this.renderRecaptcha();
+      document.body.appendChild(script);
+    } else {
+      this.renderRecaptcha();
+    }
+  }
+
+  renderRecaptcha() {
+    if (typeof grecaptcha !== 'undefined') {
+      grecaptcha.ready(() => {
+        grecaptcha.render('recaptcha-container-registro', {
+          sitekey: this.siteKey,
+          callback: (token: string) => this.onCaptchaResolved(token)
+        });
+      });
+    }
+  }
+
+  onCaptchaResolved(token: string) {
+    this.captchaResuelta = !!token;
+    this.captchaToken = token || '';
+  }
+
   passwordsMatchValidator(form: FormGroup) {
     return form.get('contraseña')?.value === form.get('confirmarContraseña')?.value
       ? null : { mismatch: true };
-  }
-
-  onCaptchaResolved(token: string | null) {
-    this.captchaResuelta = !!token;
-    this.captchaToken = token || '';
   }
 
   registrar() {
