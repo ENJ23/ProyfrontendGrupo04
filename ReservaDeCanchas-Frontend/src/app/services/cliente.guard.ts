@@ -19,9 +19,9 @@ export const clienteGuard = () => {
         return false;
       }
 
-      // Verificar si el usuario es de tipo Cliente
-      if (usuario.tipo !== 'Cliente') {
-        notificationService.showError('No tienes permisos para acceder a esta página. Solo los clientes pueden acceder.');
+      // Verificar si el usuario es de tipo Cliente o Encargado
+      if (usuario.tipo !== 'Cliente' && usuario.tipo !== 'Encargado') {
+        notificationService.showError('No tienes permisos para acceder a esta página.');
         router.navigate(['/']);
         return false;
       }

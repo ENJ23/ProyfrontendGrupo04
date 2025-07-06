@@ -19,6 +19,7 @@ export class LoginComponent implements AfterViewInit {
   captchaResuelta = false;
   captchaToken: string = '';
   siteKey: string = '6LehQHorAAAAAFk3eaHitiEeI80JFjnf-s2OsCN9';
+
   loginForm: FormGroup;
 
   constructor(
@@ -31,7 +32,7 @@ export class LoginComponent implements AfterViewInit {
       contrasena: ['', Validators.required]
     });
   }
-
+  
   ngAfterViewInit(): void {
     // Cargar el script de Google si no está cargado
     if (!document.getElementById('google-signin-script')) {
@@ -94,20 +95,16 @@ export class LoginComponent implements AfterViewInit {
     this.authService.loginConGoogle(credential).subscribe({
       next: (res) => {
         if (res.status === 1) {
-          localStorage.setItem('usuario', JSON.stringify({
+          const usuario = {
             nombre: res.nombre,
             apellido: res.apellido,
             correo: res.correo,
             tipo: res.tipo,
-            userid: res.userid
-          }));
-          this.authService.setUsuario({
-            nombre: res.nombre,
-            apellido: res.apellido,
-            correo: res.correo,
-            tipo: res.tipo,
-            userid: res.userid
-          });
+            userid: res.userid,
+            token: res.token
+          };
+          localStorage.setItem('usuario', JSON.stringify(usuario));
+          this.authService.setUsuario(usuario);
           this.router.navigate(['/']);
         } else {
           alert('No se pudo iniciar sesión con Google');

@@ -13,6 +13,12 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './mis-pagos.component.css'
 })
 export class MisPagosComponent implements OnInit {
+  showDetalleModal = false;
+  pagoDetalle: Pago | null = null;
+  showComprobanteModal = false;
+  comprobantePago: Pago | null = null;
+  showCorreoModal = false;
+  correoPago: Pago | null = null;
   pagos: Pago[] = [];
   pagosFiltrados: Pago[] = [];
   usuarioId: string = '';
@@ -50,22 +56,28 @@ export class MisPagosComponent implements OnInit {
   }
 
   verDetalle(pago: Pago) {
-    // Lógica para mostrar modal con detalle
-    alert('Detalle de pago: ' + JSON.stringify(pago, null, 2));
+    this.pagoDetalle = pago;
+    this.showDetalleModal = true;
   }
 
-  descargarComprobante(pago: Pago) {
-    // Lógica para descargar comprobante
-    alert('Descargar comprobante de pago: ' + pago._id);
+  mostrarComprobante(pago: Pago) {
+    this.comprobantePago = pago;
+    this.showComprobanteModal = true;
   }
 
   enviarPorCorreo(pago: Pago) {
-    // Lógica para enviar comprobante por correo
-    alert('Comprobante enviado por correo');
+    this.correoPago = pago;
+    this.showCorreoModal = true;
+    // Aquí podrías llamar al servicio real
   }
 
   verHistorial(pago: Pago) {
-    // Lógica para ver historial de cambios del pago
+    // Aquí podrías abrir otro modal si lo deseas
     alert('Historial de pago');
+  }
+  cerrarModal(tipo: string) {
+    if (tipo === 'detalle') this.showDetalleModal = false;
+    if (tipo === 'comprobante') this.showComprobanteModal = false;
+    if (tipo === 'correo') this.showCorreoModal = false;
   }
 }
