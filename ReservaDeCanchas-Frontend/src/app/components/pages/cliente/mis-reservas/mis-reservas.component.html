@@ -70,16 +70,129 @@
     No tienes reservas registradas.
   </div>
 
-  <!-- Modal de detalle (estructura, funcionalidad JS a implementar) -->
-  <div class="modal fade" id="detalleReservaModal" tabindex="-1" aria-labelledby="detalleReservaLabel" aria-hidden="true">
-    <div class="modal-dialog">
+  <!-- Modal de detalle de reserva -->
+  <div class="modal fade show" tabindex="-1" [ngStyle]="{display: showDetalleModal ? 'block' : 'none', background: 'rgba(0,0,0,0.3)'}" *ngIf="showDetalleModal">
+    <div class="modal-dialog modal-lg">
       <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="detalleReservaLabel">Detalle de Reserva</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <div class="modal-header"
+          [ngClass]="{
+            'bg-success text-white': reservaDetalle?.pago?.estado === 'pagado',
+            'bg-warning text-dark': reservaDetalle?.pago?.estado === 'pendiente',
+            'bg-info text-dark': reservaDetalle?.pago?.estado === 'señado',
+            'bg-secondary text-white': !reservaDetalle?.pago?.estado
+          }">
+          <h5 class="modal-title">
+            <i class="fas fa-calendar-check me-2"></i>
+            Detalle de Reserva
+          </h5>
+          <button type="button" class="btn-close" (click)="cerrarModal()"></button>
         </div>
         <div class="modal-body">
-          <!-- Aquí se mostrarán los detalles de la reserva seleccionada -->
+          <div *ngIf="reservaDetalle">
+            <div class="border rounded p-4 bg-light">
+              <h4 class="mb-3 text-center">Información de la Reserva</h4>
+              
+              <!-- Información de la Cancha -->
+              <div class="row mb-3">
+                <div class="col-12">
+                  <h5 class="text-success border-bottom pb-2">
+                    <i class="fas fa-futbol me-2"></i>Cancha
+                  </h5>
+                  <div class="row">
+                    <div class="col-6"><b>Nombre:</b> {{ reservaDetalle.cancha?.nombre || 'No especificada' }}</div>
+                    <div class="col-6"><b>Tipo:</b> {{ reservaDetalle.cancha?.tipo || 'No especificado' }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Información de la Fecha y Horario -->
+              <div class="row mb-3">
+                <div class="col-12">
+                  <h5 class="text-primary border-bottom pb-2">
+                    <i class="fas fa-clock me-2"></i>Fecha y Horario
+                  </h5>
+                  <div class="row">
+                    <div class="col-6"><b>Fecha:</b> {{ reservaDetalle.fecha | date:'fullDate' }}</div>
+                    <div class="col-6"><b>Día:</b> {{ reservaDetalle.fecha | date:'EEEE' }}</div>
+                  </div>
+                  <div class="row mt-2">
+                    <div class="col-6"><b>Hora Inicio:</b> {{ reservaDetalle.horaInicio }}</div>
+                    <div class="col-6"><b>Hora Fin:</b> {{ reservaDetalle.horaFin }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Información del Pago -->
+              <div class="row mb-3" *ngIf="reservaDetalle.pago">
+                <div class="col-12">
+                  <h5 class="text-warning border-bottom pb-2">
+                    <i class="fas fa-credit-card me-2"></i>Información de Pago
+                  </h5>
+                  <div class="row">
+                    <div class="col-6"><b>Estado:</b> 
+                      <span [ngClass]="{
+                        'badge bg-success': reservaDetalle.pago.estado === 'pagado',
+                        'badge bg-warning text-dark': reservaDetalle.pago.estado === 'pendiente',
+                        'badge bg-info text-dark': reservaDetalle.pago.estado === 'señado'
+                      }">{{ reservaDetalle.pago.estado | titlecase }}</span>
+                    </div>
+                    <div class="col-6"><b>Fecha de Pago:</b> {{ reservaDetalle.pago.fecha | date:'shortDate' }}</div>
+                  </div>
+                  <div class="row mt-2" *ngIf="reservaDetalle.pago.importeTotal">
+                    <div class="col-6"><b>Importe Total:</b> ${{ reservaDetalle.pago.importeTotal }}</div>
+                    <div class="col-6"><b>Importe Pendiente:</b> ${{ reservaDetalle.pago.importePendiente || 0 }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Información Adicional -->
+              <div class="row mb-3">
+                <div class="col-12">
+                  <h5 class="text-info border-bottom pb-2">
+                    <i class="fas fa-info-circle me-2"></i>Información Adicional
+                  </h5>
+                  <div class="row">
+                    <div class="col-6"><b>ID de Reserva:</b> {{ reservaDetalle._id }}</div>
+                    <div class="col-6"><b>Estado de Pago:</b> 
+                      <span [ngClass]="{
+                        'badge bg-success': reservaDetalle.pago?.estado === 'pagado',
+                        'badge bg-warning text-dark': reservaDetalle.pago?.estado === 'pendiente',
+                        'badge bg-info text-dark': reservaDetalle.pago?.estado === 'señado',
+                        'badge bg-secondary': !reservaDetalle.pago?.estado
+                      }">{{ reservaDetalle.pago?.estado ? (reservaDetalle.pago?.estado | titlecase) : 'Sin pago' }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Icono de Estado -->
+              <div class="row mt-4">
+                <div class="col-12 text-center">
+                  <ng-container [ngSwitch]="reservaDetalle.pago?.estado">
+                    <i *ngSwitchCase="'pagado'" class="fas fa-check-circle fa-3x text-success"></i>
+                    <i *ngSwitchCase="'pendiente'" class="fas fa-hourglass-half fa-3x text-warning"></i>
+                    <i *ngSwitchCase="'señado'" class="fas fa-info-circle fa-3x text-info"></i>
+                    <i *ngSwitchDefault class="fas fa-calendar-check fa-3x text-primary"></i>
+                  </ng-container>
+                  <div class="fw-bold mt-2">
+                    <ng-container [ngSwitch]="reservaDetalle.pago?.estado">
+                      <span *ngSwitchCase="'pagado'">Reserva confirmada y pagada</span>
+                      <span *ngSwitchCase="'pendiente'">Reserva pendiente de pago</span>
+                      <span *ngSwitchCase="'señado'">Reserva con pago parcial</span>
+                      <span *ngSwitchDefault>Reserva registrada</span>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="cerrarModal()">Cerrar</button>
+          <button type="button" class="btn btn-danger" (click)="reservaDetalle && cancelarReserva(reservaDetalle)" 
+                  [disabled]="reservaDetalle?.pago?.estado === 'pagado' || !reservaDetalle">
+            <i class="fas fa-times me-2"></i>Cancelar Reserva
+          </button>
         </div>
       </div>
     </div>
