@@ -297,8 +297,35 @@ export class CanchasComponent implements OnInit {
   }
 
   getHoraFin(horaInicio: string): string {
-    const horaInicioNum = parseInt(horaInicio.split(':')[0], 10);
-    const horaFinNum = horaInicioNum + this.cantidadHoras;
-    return horaFinNum.toString().padStart(2, '0') + ':00';
+    // Validaciones básicas
+    if (!horaInicio || typeof horaInicio !== 'string') {
+      return '';
+    }
+    
+    // Extraer la hora (número antes de los dos puntos)
+    const partes = horaInicio.split(':');
+    if (partes.length < 1) {
+      return '';
+    }
+    
+    const horaInicioNum = parseInt(partes[0], 10);
+    if (isNaN(horaInicioNum)) {
+      return '';
+    }
+    
+    // Obtener cantidad de horas
+    const cantidadHoras = parseInt(this.cantidadHoras.toString(), 10);
+    if (isNaN(cantidadHoras) || cantidadHoras < 1) {
+      return '';
+    }
+    
+    // Calcular hora de fin
+    const horaFinNum = horaInicioNum + cantidadHoras;
+    
+    // Limitar a 22:00 máximo
+    const horaFinal = Math.min(horaFinNum, 22);
+    
+    // Formatear resultado
+    return horaFinal.toString().padStart(2, '0') + ':00';
   }
 }
