@@ -1,18 +1,21 @@
-<div class="container py-4">
-  <h2 class="mb-4 fw-bold text-success">ABM de Canchas</h2>
+<div class="container">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="m-0">
+      <i class="fas fa-futbol me-2"></i>Administración de Canchas
+    </h2>
+    <button class="btn btn-success" (click)="abrirModalAgregar()">
+      <i class="fas fa-plus me-2"></i>Nueva Cancha
+    </button>
+  </div>
   <div *ngIf="loading" class="text-center my-5">
     <div class="spinner-border text-success" role="status">
       <span class="visually-hidden">Cargando...</span>
     </div>
   </div>
   <div *ngIf="error" class="alert alert-danger text-center">{{ error }}</div>
-  <div class="mb-3">
-    <button class="btn btn-success shadow-sm px-4 py-2 fw-bold" (click)="abrirModalAgregar()">
-      <i class="fas fa-plus me-2"></i>Agregar Cancha
-    </button>
-  </div>
-  <div class="table-responsive">
-    <table class="table table-bordered table-striped align-middle">
+
+  <div class="table-responsive rounded shadow-sm">
+    <table class="table table-hover align-middle">
       <thead class="table-success">
         <tr>
           <th>Imagen</th>
@@ -28,17 +31,29 @@
       <tbody>
         <tr *ngFor="let cancha of canchas">
           <td>
-            <img [src]="cancha.imagen || 'assets/default-cancha.jpg'" alt="img" style="width: 60px; height: 40px; object-fit: cover; border-radius: 4px;">
+            <img [src]="cancha.imagen || 'assets/default-cancha.jpg'" alt="Cancha" class="img-thumbnail">
           </td>
           <td>{{ cancha.nombre }}</td>
           <td>{{ cancha.tipo }}</td>
           <td>{{ cancha.ubicacion }}</td>
           <td>{{ cancha.dimensiones }}</td>
           <td>${{ cancha.precioPorHora }}</td>
-          <td>{{ cancha.estado }}</td>
           <td>
-            <button class="btn btn-outline-warning btn-sm fw-bold me-2" (click)="abrirModalEditar(cancha)"><i class="fas fa-edit"></i> Modificar</button>
-            <button class="btn btn-outline-danger btn-sm fw-bold" (click)="abrirModalEliminar(cancha)"><i class="fas fa-trash"></i> Eliminar</button>
+            <span class="status-badge" [ngClass]="'status-' + cancha.estado">
+              {{ cancha.estado }}
+            </span>
+          </td>
+          <td>
+            <div class="d-flex gap-2 justify-content-center">
+            <button class="btn btn-outline-warning btn-sm" (click)="abrirModalEditar(cancha)">
+              <i class="fas fa-edit"></i>
+              <span class="d-none d-md-inline">Editar</span>
+            </button>
+            <button class="btn btn-outline-danger btn-sm" (click)="abrirModalEliminar(cancha)">
+              <i class="fas fa-trash"></i>
+              <span class="d-none d-md-inline">Eliminar</span>
+            </button>
+          </div>
           </td>
         </tr>
       </tbody>
@@ -46,12 +61,12 @@
   </div>
 
   <!-- Modal Agregar Cancha -->
-  <div class="modal fade show" tabindex="-1" [ngStyle]="{display: showAddModal ? 'block' : 'none', background: 'rgba(0,0,0,0.3)'}" *ngIf="showAddModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
+  <div class="modal fade show" tabindex="-1" [ngStyle]="{display: showAddModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)'}" *ngIf="showAddModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content overflow-hidden">
         <div class="modal-header">
-          <h5 class="modal-title"><i class="fas fa-plus me-2"></i>Agregar Cancha</h5>
-          <button type="button" class="btn-close" (click)="cerrarModal('add')"></button>
+          <h5 class="modal-title"><i class="fas fa-plus-circle me-2"></i>Agregar Cancha</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="cerrarModal('add')"></button>
         </div>
         <div class="modal-body">
           <form (ngSubmit)="agregarCancha()">
@@ -67,9 +82,13 @@
                 <option value="mantenimiento">En mantenimiento</option>
               </select>
             </div>
-            <div class="d-flex justify-content-end gap-2 mt-3">
-              <button type="button" class="btn btn-outline-secondary" (click)="cerrarModal('add')">Cancelar</button>
-              <button type="submit" class="btn btn-success fw-bold">Agregar</button>
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <button type="button" class="btn btn-outline-secondary" (click)="cerrarModal('add')">
+                <i class="fas fa-times me-1"></i> Cancelar
+              </button>
+              <button type="submit" class="btn btn-success">
+                <i class="fas fa-plus me-1"></i> Agregar
+              </button>
             </div>
           </form>
         </div>
@@ -78,12 +97,12 @@
   </div>
 
   <!-- Modal Editar Cancha -->
-  <div class="modal fade show" tabindex="-1" [ngStyle]="{display: showEditModal ? 'block' : 'none', background: 'rgba(0,0,0,0.3)'}" *ngIf="showEditModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
+  <div class="modal fade show" tabindex="-1" [ngStyle]="{display: showEditModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)'}" *ngIf="showEditModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content overflow-hidden">
         <div class="modal-header">
           <h5 class="modal-title"><i class="fas fa-edit me-2"></i>Modificar Cancha</h5>
-          <button type="button" class="btn-close" (click)="cerrarModal('edit')"></button>
+          <button type="button" class="btn-close btn-close-white" (click)="cerrarModal('edit')"></button>
         </div>
         <div class="modal-body">
           <form (ngSubmit)="editarCanchaSubmit()">
@@ -99,9 +118,13 @@
                 <option value="mantenimiento">En mantenimiento</option>
               </select>
             </div>
-            <div class="d-flex justify-content-end gap-2 mt-3">
-              <button type="button" class="btn btn-outline-secondary" (click)="cerrarModal('edit')">Cancelar</button>
-              <button type="submit" class="btn btn-warning fw-bold">Guardar Cambios</button>
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <button type="button" class="btn btn-outline-secondary" (click)="cerrarModal('edit')">
+                <i class="fas fa-times me-1"></i> Cancelar
+              </button>
+              <button type="submit" class="btn btn-warning">
+                <i class="fas fa-save me-1"></i> Guardar Cambios
+              </button>
             </div>
           </form>
         </div>
@@ -110,18 +133,22 @@
   </div>
 
   <!-- Modal Eliminar Cancha -->
-  <div class="modal fade show" tabindex="-1" [ngStyle]="{display: showDeleteModal ? 'block' : 'none', background: 'rgba(0,0,0,0.3)'}" *ngIf="showDeleteModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title"><i class="fas fa-trash me-2"></i>Eliminar Cancha</h5>
-          <button type="button" class="btn-close" (click)="cerrarModal('delete')"></button>
+  <div class="modal fade show" tabindex="-1" [ngStyle]="{display: showDeleteModal ? 'block' : 'none', background: 'rgba(0,0,0,0.5)'}" *ngIf="showDeleteModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content overflow-hidden">
+        <div class="modal-header bg-danger">
+          <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Eliminar Cancha</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="cerrarModal('delete')"></button>
         </div>
         <div class="modal-body">
           <p>¿Estás seguro de que deseas eliminar la cancha <b>{{ canchaAEliminar?.nombre }}</b>?</p>
-          <div class="d-flex justify-content-end gap-2 mt-3">
-            <button type="button" class="btn btn-outline-secondary" (click)="cerrarModal('delete')">Cancelar</button>
-            <button type="button" class="btn btn-danger fw-bold" (click)="eliminarCanchaConfirmada()">Eliminar</button>
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="button" class="btn btn-outline-secondary" (click)="cerrarModal('delete')">
+              <i class="fas fa-times me-1"></i> Cancelar
+            </button>
+            <button type="button" class="btn btn-danger" (click)="eliminarCanchaConfirmada()">
+              <i class="fas fa-trash-alt me-1"></i> Eliminar
+            </button>
           </div>
         </div>
       </div>
