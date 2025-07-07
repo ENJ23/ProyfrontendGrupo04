@@ -315,3 +315,7 @@
     color: #6c757d;
     border-color: #dee2e6;
 }
+
+.modal-header h5{
+  color: var(--text-light) !important;
+}
