@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
 })
 export class AuthService {
   private apiUrl = `${environment.apiUrl}/usuarios`;
+  private apiClienteUrl = `${environment.apiUrl}/clientes`
   private usuarioSubject = new BehaviorSubject<any>(this.getUsuario());
 
   constructor(private http: HttpClient) {}
@@ -55,6 +56,6 @@ export class AuthService {
   }
 
   cambiarPassword(id: string, actual: string, nueva: string) {
-    return this.http.put(`${this.apiUrl}/${id}/cambiar-password`, { actual, nueva });
+    return this.http.put(`${this.apiClienteUrl}/${id}/cambiar-password`, { actual, nueva });
   }
 }
