@@ -49,7 +49,7 @@
   }
 
   .bg-green{
-    background-color: var(--green);
+    background-color: var(--green) !important;
   }
   
   /* Títulos */
