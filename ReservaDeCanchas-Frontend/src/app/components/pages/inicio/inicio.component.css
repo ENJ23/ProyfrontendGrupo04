@@ -49,6 +49,22 @@
   box-shadow: 0 7px 20px rgba(0, 0, 0, 0.15);
 }
 
+/* Ajustes responsivos generales */
+@media (max-width: 992px) {
+  .hero h1 {
+    font-size: 2.8rem;
+  }
+  
+  .hero h2 {
+    font-size: 2.5rem;
+  }
+  
+  .hero p {
+    font-size: 1.3rem;
+  }
+}
+
+
 /* Estilos para la sección de estadísticas */
 .counter-item {
   background-color: #f8f9fa;
@@ -67,6 +83,7 @@
   font-weight: 700;
   position: relative;
   display: inline-block;
+  color: var(--green);
 }
 
 .counter-number::after {
@@ -129,42 +146,6 @@
   }
 }
 
-/* Ajustes responsivos generales */
-@media (max-width: 992px) {
-  .hero h1 {
-    font-size: 2.8rem;
-  }
-  
-  .hero h2 {
-    font-size: 2.5rem;
-  }
-  
-  .hero p {
-    font-size: 1.3rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .hero h1 {
-    font-size: 2.2rem;
-  }
-  
-  .hero h2 {
-    font-size: 2rem;
-  }
-  
-  .hero {
-    min-height: 70vh;
-    text-align: center;
-    padding: 60px 0;
-  }
-  
-  .hero .btn {
-    padding: 12px 30px;
-    font-size: 1rem;
-  }
-}
-
 /* Estilos para la sección "¿Cómo reservar?" */
 #como-reservar {
   background-color: #f8f9fa;
@@ -186,8 +167,8 @@
 #como-reservar .step-number {
   width: 40px;
   height: 40px;
-  background-color: #198754;
-  color: white;
+  background: var(--gradient-primary);
+  color: var(--text-light);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -199,22 +180,12 @@
 }
 
 #como-reservar .fa-3x {
-  color: #198754;
+  color: var(--primary);
   transition: transform 0.3s ease;
 }
 
 #como-reservar .card:hover .fa-3x {
   transform: scale(1.1);
-}
-
-#como-reservar .btn-outline-success {
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  font-weight: bold;
 }
 
 /* Animación para las tarjetas */
@@ -295,71 +266,4 @@
 
 .fas, .far {
   vertical-align: middle;
-}
-
-.reservar-btn {
-  background: linear-gradient(135deg, #dbdb13 0%, #157347 100%);
-  border: none;
-  border-radius: 50px;
-  box-shadow: 0 4px 15px rgba(25, 135, 84, 0.3);
-  position: relative;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  font-size: 1.1rem;
-  padding: 12px 35px !important;
-  border: 2px solid transparent;
-}
-
-.reservar-btn:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 25px rgba(25, 135, 84, 0.4);
-  background: linear-gradient(135deg, #dbdb13 0%, #157347 100%);
-  color: white !important;
-}
-
-.reservar-btn:active {
-  transform: translateY(1px);
-  box-shadow: 0 2px 10px rgba(25, 135, 84, 0.3);
-}
-
-.reservar-btn::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-  transition: 0.5s;
-}
-
-.reservar-btn:hover::before {
-  left: 100%;
-}
-
-/* Efecto de pulso */
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(25, 135, 84, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(25, 135, 84, 0);
-  }
-}
-
-.reservar-btn:hover {
-  animation: pulse 1.5s infinite;
-}
-
-/* Ajustes responsivos */
-@media (max-width: 768px) {
-  .reservar-btn {
-    font-size: 1rem;
-    padding: 10px 25px !important;
-  }
 }
