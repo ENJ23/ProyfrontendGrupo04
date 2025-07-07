@@ -25,6 +25,8 @@ export class MisReservasComponent implements OnInit {
   estadoFiltro = '';
   cancha: Cancha = {} as Cancha;
   pago: Pago = {} as Pago;
+  showDetalleModal = false;
+  reservaDetalle: Reserva | null = null;
 
   constructor(
     private reservaService: ReservasService,
@@ -64,8 +66,13 @@ export class MisReservasComponent implements OnInit {
   }
 
   verDetalle(reserva: Reserva) {
-    // Lógica para mostrar modal con detalle
-    alert('Detalle de reserva: ' + JSON.stringify(reserva, null, 2));
+    this.reservaDetalle = reserva;
+    this.showDetalleModal = true;
+  }
+
+  cerrarModal() {
+    this.showDetalleModal = false;
+    this.reservaDetalle = null;
   }
 
   cancelarReserva(reserva: Reserva) {
