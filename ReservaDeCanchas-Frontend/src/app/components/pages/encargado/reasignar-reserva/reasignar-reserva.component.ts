@@ -39,9 +39,42 @@ export class ReasignarReservaComponent implements OnInit {
   setFechasLimite() {
     const hoy = new Date();
     const max = new Date();
-    max.setMonth(hoy.getMonth() + 2); // Permite seleccionar hasta 2 meses adelante
-    this.minFecha = hoy.toISOString().split('T')[0];
-    this.maxFecha = max.toISOString().split('T')[0];
+    max.setDate(hoy.getDate() + 30); // Permitir reasignaciones hasta 30 días adelante
+
+    // Formatear fechas en formato YYYY-MM-DD
+    this.minFecha = this.formatearFecha(hoy);
+    this.maxFecha = this.formatearFecha(max);
+  }
+
+  formatearFecha(fecha: Date): string {
+    return fecha.toISOString().split('T')[0];
+  }
+
+  validarFecha(fecha: string): boolean {
+    if (!fecha) return false;
+    
+    // Verificar formato YYYY-MM-DD
+    const regexFecha = /^\d{4}-\d{2}-\d{2}$/;
+    if (!regexFecha.test(fecha)) return false;
+    
+    const fechaSeleccionada = new Date(fecha);
+    const hoy = new Date();
+    
+    // Resetear las horas para comparar solo fechas
+    hoy.setHours(0, 0, 0, 0);
+    fechaSeleccionada.setHours(0, 0, 0, 0);
+    
+    // Verificar que no sea una fecha pasada
+    if (fechaSeleccionada < hoy) return false;
+    
+    // Verificar que no sea más de 30 días en el futuro
+    const maxFecha = new Date();
+    maxFecha.setDate(hoy.getDate() + 30);
+    maxFecha.setHours(0, 0, 0, 0);
+    
+    if (fechaSeleccionada > maxFecha) return false;
+    
+    return true;
   }
 
   cargarCanchas() {
@@ -52,6 +85,14 @@ export class ReasignarReservaComponent implements OnInit {
 
   buscarReservas() {
     if (!this.canchaSeleccionada || !this.fechaSeleccionada) return;
+    
+    // Validar fecha seleccionada
+    if (!this.validarFecha(this.fechaSeleccionada)) {
+      alert('Por favor selecciona una fecha válida (hoy o hasta 30 días en el futuro).');
+      this.fechaSeleccionada = this.getHoy();
+      return;
+    }
+    
     this.loading = true;
     this.reservasService.getReservas().subscribe((resp: any) => {
       // Filtra reservas por cancha y fecha
@@ -72,36 +113,92 @@ export class ReasignarReservaComponent implements OnInit {
 
   cargarHorariosDisponibles() {
     if (!this.canchaSeleccionada || !this.nuevaFecha) return;
+    
+    // Validar nueva fecha
+    if (!this.validarFecha(this.nuevaFecha)) {
+      alert('La nueva fecha seleccionada no es válida.');
+      return;
+    }
+    
     this.horariosService.getHorariosReservados(this.canchaSeleccionada, this.nuevaFecha).subscribe((resp: any) => {
-      const ocupados = resp.data.map((h: any) => h.horaInicio);
-      const bloques = this.generarBloquesHorarios(2); // O la duración que uses
+      const ocupados = resp.data
+        .filter((h: any) => h.estado !== 'disponible')
+        .map((h: any) => h.horaInicio);
+      
+      const bloques = this.generarBloquesHorarios(this.calcularDuracionReserva());
       this.horariosDisponibles = bloques.filter(b =>
-        !ocupados.includes(b.horaInicio) || b.horaInicio === this.reservaSeleccionada.horaInicio
+        !ocupados.includes(b.horaInicio) || b.horaInicio === this.reservaSeleccionada?.horaInicio
       );
     });
   }
 
+  calcularDuracionReserva(): number {
+    if (!this.reservaSeleccionada) return 2; // Duración por defecto
+    
+    const horaInicio = parseInt(this.reservaSeleccionada.horaInicio.split(':')[0], 10);
+    const horaFin = parseInt(this.reservaSeleccionada.horaFin.split(':')[0], 10);
+    return horaFin - horaInicio;
+  }
+
+  validarReasignacion(): boolean {
+    if (!this.reservaSeleccionada || !this.nuevaFecha || !this.nuevoHorario) {
+      alert('Completa todos los campos requeridos.');
+      return false;
+    }
+    
+    // Validar nueva fecha
+    if (!this.validarFecha(this.nuevaFecha)) {
+      alert('La nueva fecha seleccionada no es válida.');
+      return false;
+    }
+    
+    // Validar que el nuevo horario esté disponible
+    const horarioSeleccionado = this.horariosDisponibles.find(h => h.horaInicio === this.nuevoHorario);
+    if (!horarioSeleccionado) {
+      alert('El horario seleccionado no está disponible.');
+      return false;
+    }
+    
+    // Validar rango de horas (10:00 a 22:00)
+    const horaInicioNum = parseInt(this.nuevoHorario.split(':')[0], 10);
+    const duracion = this.calcularDuracionReserva();
+    const horaFinNum = horaInicioNum + duracion;
+    
+    if (horaInicioNum < 10 || horaFinNum > 22) {
+      alert('Los horarios solo están disponibles entre las 10:00 y 22:00 horas.');
+      return false;
+    }
+    
+    return true;
+  }
+
   confirmarReasignacion() {
-    if (!this.reservaSeleccionada || !this.nuevaFecha || !this.nuevoHorario) return;
-    // Validación extra: no permitir fechas pasadas
-    if (this.nuevaFecha < this.minFecha) {
-      alert('No puedes seleccionar una fecha pasada.');
+    if (!this.validarReasignacion()) {
       return;
     }
+    
+    const duracion = this.calcularDuracionReserva();
+    const nuevaHoraFin = this.calcularHoraFin(this.nuevoHorario, duracion);
+    
     this.reservasService.updateReserva(this.reservaSeleccionada._id, {
       fecha: this.nuevaFecha,
       horaInicio: this.nuevoHorario,
-      horaFin: this.calcularHoraFin(this.nuevoHorario)
-    }).subscribe(() => {
-      alert('Reserva reasignada correctamente');
-      this.buscarReservas();
-      // Cierra el modal aquí
+      horaFin: nuevaHoraFin
+    }).subscribe({
+      next: () => {
+        alert('Reserva reasignada correctamente');
+        this.buscarReservas();
+        // Cierra el modal aquí
+        this.cerrarModal();
+      },
+      error: () => {
+        alert('Error al reasignar la reserva');
+      }
     });
   }
 
-  calcularHoraFin(horaInicio: string): string {
-    // Asume bloques de 2 horas
-    const hora = parseInt(horaInicio.split(':')[0], 10) + 2;
+  calcularHoraFin(horaInicio: string, duracion: number): string {
+    const hora = parseInt(horaInicio.split(':')[0], 10) + duracion;
     return hora.toString().padStart(2, '0') + ':00';
   }
 
@@ -113,5 +210,20 @@ export class ReasignarReservaComponent implements OnInit {
       bloques.push({ horaInicio, horaFin });
     }
     return bloques;
+  }
+
+  getHoy(): string {
+    return this.formatearFecha(new Date());
+  }
+
+  cerrarModal() {
+    const modalElement = document.getElementById('reasignarModal');
+    if (modalElement) {
+      // @ts-ignore
+      const modal = window.bootstrap.Modal.getInstance(modalElement);
+      if (modal) {
+        modal.hide();
+      }
+    }
   }
 }

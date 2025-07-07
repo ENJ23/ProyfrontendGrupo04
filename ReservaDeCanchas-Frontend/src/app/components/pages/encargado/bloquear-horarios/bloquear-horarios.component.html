@@ -11,7 +11,9 @@
           <div class="card-body p-4">
             <form class="row g-4" (ngSubmit)="bloquearHorario()">
               <div class="col-md-6">
-                <label for="cancha" class="form-label fw-semibold">Cancha</label>
+                <label for="cancha" class="form-label fw-semibold">
+                  <i class="fas fa-futbol text-success me-2"></i>Cancha
+                </label>
                 <div class="input-group">
                   <span class="input-group-text bg-light">
                     <i class="fas fa-futbol text-success"></i>
@@ -23,16 +25,34 @@
                 </div>
               </div>
               <div class="col-md-6">
-                <label for="fecha" class="form-label fw-semibold">Fecha</label>
+                <label for="fecha" class="form-label fw-semibold">
+                  <i class="far fa-calendar-alt text-success me-2"></i>Fecha
+                </label>
                 <div class="input-group">
                   <span class="input-group-text bg-light">
                     <i class="far fa-calendar-alt text-success"></i>
                   </span>
-                  <input type="date" class="form-control" id="fecha" [(ngModel)]="fechaSeleccionada" name="fechaSeleccionada" (change)="onSeleccionarCanchaOFecha()" required>
+                  <input 
+                    type="date" 
+                    class="form-control" 
+                    id="fecha" 
+                    [(ngModel)]="fechaSeleccionada" 
+                    name="fechaSeleccionada" 
+                    (change)="onSeleccionarCanchaOFecha()" 
+                    [min]="minFecha"
+                    [max]="maxFecha"
+                    required
+                  >
+                </div>
+                <div class="form-text text-muted mt-2">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Bloqueos disponibles desde hoy hasta 30 días en el futuro
                 </div>
               </div>
               <div class="col-md-6">
-                <label for="horaInicio" class="form-label fw-semibold">Hora Inicio</label>
+                <label for="horaInicio" class="form-label fw-semibold">
+                  <i class="far fa-clock text-success me-2"></i>Hora Inicio
+                </label>
                 <div class="input-group">
                   <span class="input-group-text bg-light">
                     <i class="far fa-clock text-success"></i>
@@ -42,9 +62,15 @@
                     <option *ngFor="let hora of horariosDisponibles" [value]="hora">{{ hora }}</option>
                   </select>
                 </div>
+                <div class="form-text text-muted mt-2">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Horarios disponibles entre 10:00 y 22:00 horas
+                </div>
               </div>
               <div class="col-md-6">
-                <label for="horaFin" class="form-label fw-semibold">Hora Fin</label>
+                <label for="horaFin" class="form-label fw-semibold">
+                  <i class="far fa-clock text-success me-2"></i>Hora Fin
+                </label>
                 <div class="input-group">
                   <span class="input-group-text bg-light">
                     <i class="far fa-clock text-success"></i>
@@ -53,6 +79,10 @@
                     <option value="" selected disabled>Seleccione hora fin</option>
                     <option *ngFor="let hora of horariosDisponibles" [value]="hora">{{ hora }}</option>
                   </select>
+                </div>
+                <div class="form-text text-muted mt-2">
+                  <i class="fas fa-info-circle me-1"></i>
+                  Debe ser mayor que la hora de inicio
                 </div>
               </div>
               <div class="col-12 d-flex justify-content-end gap-3 mt-3">
@@ -64,6 +94,48 @@
                 </button>
               </div>
             </form>
+
+            <!-- Información de horarios disponibles -->
+            <div class="mt-4" *ngIf="canchaSeleccionada && fechaSeleccionada">
+              <div class="card border-success bg-light">
+                <div class="card-header bg-success text-white">
+                  <h6 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Información de Horarios
+                  </h6>
+                </div>
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <div class="d-flex align-items-center">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <div>
+                          <strong>Disponibles:</strong>
+                          <span class="badge bg-success ms-2">{{ horariosDisponibles.length }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="d-flex align-items-center">
+                        <i class="fas fa-lock text-warning me-2"></i>
+                        <div>
+                          <strong>Bloqueados:</strong>
+                          <span class="badge bg-warning ms-2">{{ horariosBloqueados.length }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-4">
+                      <div class="d-flex align-items-center">
+                        <i class="fas fa-calendar-check text-danger me-2"></i>
+                        <div>
+                          <strong>Ocupados:</strong>
+                          <span class="badge bg-danger ms-2">{{ horariosOcupados.length }}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
 
             <!-- Tabla de horarios bloqueados -->
             <div class="mt-5">
@@ -84,7 +156,7 @@
                   <tbody>
                     <tr *ngFor="let horario of horariosBloqueados">
                       <td class="border-end">{{ canchaSeleccionada?.nombre }} - {{ canchaSeleccionada?.tipo }}</td>
-                      <td class="border-end">{{ horario.fecha }}</td>
+                      <td class="border-end">{{ horario.fecha | date:'dd/MM/yyyy' }}</td>
                       <td class="border-end">{{ horario.horaInicio }}</td>
                       <td class="border-end">{{ horario.horaFin }}</td>
                       <td class="text-center">
@@ -103,6 +175,7 @@
 
             <div *ngIf="loadingHorarios" class="text-center my-3">
               <div class="spinner-border text-success"></div>
+              <p class="text-muted mt-2">Cargando horarios...</p>
             </div>
             <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
           </div>
