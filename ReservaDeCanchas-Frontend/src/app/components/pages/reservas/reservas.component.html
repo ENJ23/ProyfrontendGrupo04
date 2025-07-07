@@ -44,7 +44,11 @@
                   </li>
                   <li class="mb-2">
                     <i class="far fa-clock text-success me-2"></i>
-                    <span class="fw-medium">Hora: </span> {{ hora }} - {{ sumarUnaHora(hora) }}
+                    <span class="fw-medium">Hora: </span> {{ hora }} - {{ horaFin }}
+                  </li>
+                  <li class="mb-2">
+                    <i class="fas fa-hourglass-half text-success me-2"></i>
+                    <span class="fw-medium">Duración: </span> {{ cantidadHoras }} hora{{ cantidadHoras > 1 ? 's' : '' }}
                   </li>
                   <li class="mb-2" *ngIf="cliente">
                     <i class="far fa-user text-success me-2"></i>
@@ -60,13 +64,21 @@
                     <span class="fw-medium">${{ cancha?.precioPorHora || '0' }}</span>
                   </div>
                   <div class="d-flex justify-content-between mb-2">
+                    <span>Cantidad de horas:</span>
+                    <span class="fw-medium">{{ cantidadHoras }} hora{{ cantidadHoras > 1 ? 's' : '' }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span class="fw-medium">${{ cancha?.precioPorHora ? (cancha.precioPorHora * cantidadHoras) : 0 | number:'1.0-0' }}</span>
+                  </div>
+                  <div class="d-flex justify-content-between mb-2">
                     <span>Seña (30%):</span>
-                    <span class="fw-medium text-success">${{ cancha?.precioPorHora ? (cancha.precioPorHora * 0.3) : 0 | number:'1.0-0' }}</span>
+                    <span class="fw-medium text-success">${{ cancha?.precioPorHora ? (cancha.precioPorHora * cantidadHoras * 0.3) : 0 | number:'1.0-0' }}</span>
                   </div>
                   <hr class="my-2">
                   <div class="d-flex justify-content-between fw-bold">
                     <span>Total a pagar ahora:</span>
-                    <span>${{ cancha?.precioPorHora ? (cancha.precioPorHora * 0.3) : 0 | number:'1.0-0' }}</span>
+                    <span>${{ cancha?.precioPorHora ? (cancha.precioPorHora * cantidadHoras * 0.3) : 0 | number:'1.0-0' }}</span>
                   </div>
                 </div>
               </div>
@@ -127,11 +139,11 @@
             <div class="row">
               <div class="col-md-6">
                 <p class="mb-1"><strong>Fecha:</strong> {{ fecha | date:'dd/MM/yyyy' }}</p>
-                <p class="mb-1"><strong>Hora:</strong> {{ hora }} - {{ sumarUnaHora(hora) }}</p>
+                <p class="mb-1"><strong>Hora:</strong> {{ hora }} - {{ horaFin }}</p>
               </div>
               <div class="col-md-6">
                 <p class="mb-1"><strong>Cliente:</strong> {{ cliente?.nombre }} {{ cliente?.apellido }}</p>
-                <p class="mb-1"><strong>Duración:</strong> 1 hora</p>
+                <p class="mb-1"><strong>Duración:</strong> {{ cantidadHoras }} hora{{ cantidadHoras > 1 ? 's' : '' }}</p>
               </div>
             </div>
           </div>
@@ -145,17 +157,25 @@
                     <td class="text-end">${{ cancha?.precioPorHora }}</td>
                   </tr>
                   <tr>
+                    <td>Cantidad de horas:</td>
+                    <td class="text-end">{{ cantidadHoras }} hora{{ cantidadHoras > 1 ? 's' : '' }}</td>
+                  </tr>
+                  <tr>
+                    <td>Subtotal:</td>
+                    <td class="text-end">${{ cancha?.precioPorHora ? (cancha.precioPorHora * cantidadHoras) : 0 | number:'1.0-0' }}</td>
+                  </tr>
+                  <tr>
                     <td>Seña (30%):</td>
-                    <td class="text-end text-success">${{ cancha?.precioPorHora ? (cancha.precioPorHora * 0.3) : 0 | number:'1.0-0' }}</td>
+                    <td class="text-end text-success">${{ cancha?.precioPorHora ? (cancha.precioPorHora * cantidadHoras * 0.3) : 0 | number:'1.0-0' }}</td>
                   </tr>
                   <tr class="border-top">
                     <td class="fw-bold">Total Pagado:</td>
-                    <td class="text-end fw-bold">${{ cancha?.precioPorHora && cantidadHoras ? (cancha.precioPorHora * cantidadHoras * 0.3) : 0 | number:'1.0-0' }}</td>
+                    <td class="text-end fw-bold">${{ cancha?.precioPorHora ? (cancha.precioPorHora * cantidadHoras * 0.3) : 0 | number:'1.0-0' }}</td>
                   </tr>
                   <tr>
                     <td>Saldo Pendiente:</td>
                     <td class="text-end">
-                      ${{ pago?.importeTotal !== undefined ? (pago.importeTotal - (cancha.precioPorHora * cantidadHoras * 0.3)) : 0 | number:'1.0-0' }}
+                      ${{ cancha?.precioPorHora ? (cancha.precioPorHora * cantidadHoras * 0.7) : 0 | number:'1.0-0' }}
                     </td>
                   </tr>
                 </tbody>
