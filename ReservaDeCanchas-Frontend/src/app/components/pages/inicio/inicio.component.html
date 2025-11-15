@@ -5,8 +5,17 @@
       <div class="col-lg-8 mx-auto text-center">
         <h1 class="display-4 texto fw-bold mb-2">Reservá en tan</h1> <h2 class="">solo 7 clicks</h2> 
         <p class="lead mt-4 mb-5 fw-bold shadow-lg">Sin llamadas, sin complicaciones. Todo desde tu pantalla.</p>
-        <a [routerLink]="['/registrar-cliente']" class="btn btn-gradient text-white btn-lg px-5 py-3 fw-bold text-success">
-          Registrarse ahora
+        <!-- Botón condicional según estado de autenticación -->
+        <a *ngIf="!isLoggedIn" 
+           [routerLink]="['/registrar-cliente']" 
+           class="btn btn-gradient text-white btn-lg px-5 py-3 fw-bold text-success">
+          <i class="fas fa-user-plus me-2"></i>Registrarse ahora
+        </a>
+        
+        <a *ngIf="isLoggedIn" 
+           [routerLink]="['/canchas']" 
+           class="btn btn-gradient text-white btn-lg px-5 py-3 fw-bold text-success">
+          <i class="fas fa-calendar-check me-2"></i>Reservar ya
         </a>
       </div>
     </div>

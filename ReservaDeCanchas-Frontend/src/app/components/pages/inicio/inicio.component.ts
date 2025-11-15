@@ -12,6 +12,7 @@ import { RouterModule } from '@angular/router';
 export class InicioComponent implements AfterViewInit {
   private animationStarted = false;
   private countersAnimated = false;
+  private isLoggedIn = false;
 
   ngAfterViewInit() {
     this.setupCounterAnimation();
@@ -22,6 +23,12 @@ export class InicioComponent implements AfterViewInit {
     if (!this.animationStarted) {
       this.checkIfCountersInView();
     }
+  }
+
+    private checkAuthentication() {
+    // Verifica si existe un token en localStorage
+    const token = localStorage.getItem('token');
+    this.isLoggedIn = !!token;
   }
 
   private setupCounterAnimation() {
