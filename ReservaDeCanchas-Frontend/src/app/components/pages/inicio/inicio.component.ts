@@ -12,8 +12,13 @@ import { RouterModule } from '@angular/router';
 export class InicioComponent implements AfterViewInit {
   private animationStarted = false;
   private countersAnimated = false;
-  private isLoggedIn = false;
+  isLoggedIn: boolean = false;
 
+    ngOnInit() {
+    // Verificar si el usuario está autenticado
+    this.checkAuthentication();
+  }
+  
   ngAfterViewInit() {
     this.setupCounterAnimation();
   }
