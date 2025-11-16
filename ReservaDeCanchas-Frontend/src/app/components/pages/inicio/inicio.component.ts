@@ -1,6 +1,7 @@
-import { Component, AfterViewInit, HostListener } from '@angular/core';
+import { Component, AfterViewInit, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-inicio',
@@ -9,16 +10,23 @@ import { RouterModule } from '@angular/router';
   templateUrl: './inicio.component.html',
   styleUrls: ['./inicio.component.css']
 })
-export class InicioComponent implements AfterViewInit {
+export class InicioComponent implements OnInit, AfterViewInit {
   private animationStarted = false;
   private countersAnimated = false;
   isLoggedIn: boolean = false;
 
-    ngOnInit() {
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
     // Verificar si el usuario está autenticado
     this.checkAuthentication();
+    
+    // Suscribirse a cambios en el estado de autenticación
+    this.authService.usuarioObservable().subscribe(() => {
+      this.checkAuthentication();
+    });
   }
-  
+
   ngAfterViewInit() {
     this.setupCounterAnimation();
   }
@@ -30,10 +38,9 @@ export class InicioComponent implements AfterViewInit {
     }
   }
 
-    private checkAuthentication() {
-    // Verifica si existe un token en localStorage
-    const token = localStorage.getItem('token');
-    this.isLoggedIn = !!token;
+  private checkAuthentication() {
+    // Usa el método del servicio que ya existe
+    this.isLoggedIn = this.authService.isLoggedIn();
   }
 
   private setupCounterAnimation() {
